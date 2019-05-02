@@ -11,10 +11,12 @@ from robot_coordination.srv import AddPath
 from robot_coordination.srv import StartMovement
 from robot_coordination.srv import StopMovement
 import rospy
+from nav_msgs.msg import Path
 
 class PathFollowing:
     def __init__(self):
         self.state_sub = rospy.Subscriber('waypoints_ahead', Int32, self.callback_state)
+        self.state_sub = rospy.Subscriber('path_waypoints', Path, self.callback_path)
         self.odom_frame = rospy.get_param('~odom_frame', 'odom')
         self.robot_frame = rospy.get_param('~robot_frame', 'base_link')
         self.waypoints_ahead = 0
@@ -23,7 +25,18 @@ class PathFollowing:
     def callback_state(self, msg):
         self.waypoints_ahead = msg.data
         self.waypoints_ahead_updated = True
-        
+
+    def callback_path(self, msg):
+        self.stop_movement();
+        waypoint_list = create_trajectory(msg)
+        if not self.add_path(waypoint_list):
+            rospy.logerr('Could not add path, exiting')
+        rospy.loginfo('Path added')
+        if not self.start_movement(backwards=False):
+            rospy.logerr('Could not start motion, exiting')
+        rospy.loginfo('Movement started')
+
+            
     def wait_for_service(self, srv_name):
         """Wait for a service called srv_name."""
         while not rospy.is_shutdown():
@@ -78,17 +91,20 @@ class PathFollowing:
     def path_finished(self):
         return (self.waypoints_ahead <= 0) and self.waypoints_ahead_updated
        
-def create_trajectory():
+def create_trajectory(data):
     """ Create a trajectory in the odometry frame. """
     # x,y,time
+    """
     gtr = [ 
-        [0.6, 1.6, 0],
-        [0.5, 1.7, 0],
-        [0.4, 1.8, 0],
-        [0.3, 1.9, 0],
-        [0.2, 2.0, 0],
+        [-0.1, -0.1, 0],
+        [-0.2, -0.2, 0],
+        [-0.3, -0.3, 0],
+        [-0.4, -0.4, 0],
+        [-0.5, -0.5, 0],
     ]
+    """
     waypoint_list = []
+    """
     for r in gtr:
         waypoint = Waypoint()
         waypoint.pose = Pose()
@@ -96,6 +112,14 @@ def create_trajectory():
         waypoint.pose.position.y = r[1]
         waypoint.timepoint = rospy.Duration.from_sec(r[2])
         waypoint_list.append(waypoint)
+    """
+    for waypoint_tmp in data.poses[::2]:
+        waypoint = Waypoint()
+        waypoint.pose = Pose()
+        waypoint.pose = waypoint_tmp.pose 
+        waypoint.timepoint = rospy.Duration.from_sec(15)
+        waypoint_list.append(waypoint)
+
     return waypoint_list
 
 def main():
@@ -103,26 +127,11 @@ def main():
     
     pf = PathFollowing()
     rate = rospy.Rate(10)
-    waypoint_list = create_trajectory()
-    if not pf.add_path(waypoint_list):
-        rospy.logerr('Could not add path, exiting')
-        return
-    rospy.loginfo('Path added')
-    if not pf.start_movement(backwards=False):
-        rospy.logerr('Could not start motion, exiting')
-        return
-    rospy.loginfo('Movement started')
-    while not pf.path_finished() and not rospy.is_shutdown():
+
+    
+    while not rospy.is_shutdown():
         rate.sleep()
-    rospy.loginfo('Movement ended')
-    if not pf.stop_movement():
-        rospy.logerr('Could not stop motion, exiting')
-        return
-    rospy.loginfo('Movement stopped')
-    if not pf.add_path([]):
-        rospy.logerr('Could not clear path, exiting')
-        return
-    rospy.loginfo('Path cleared')
+
 
 
 if __name__ == '__main__':

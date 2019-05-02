@@ -76,7 +76,9 @@ class Robot {
 
     geometry_msgs::Pose robot_pose_;
 
-    double threshold_;
+    double thresholdT_;
+
+    double thresholdR_;
     bool go_backwards_;
 
     bool execute_;

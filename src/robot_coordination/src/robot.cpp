@@ -6,7 +6,7 @@
 
 /* threshold - robot waypoint tolerance in meters */
 Robot::Robot() :
-  threshold_(0.1), go_backwards_(false) {
+  thresholdT_(0.2),thresholdR_(0.1), go_backwards_(false) {
 }
 
 void Robot::odometryCallback (const nav_msgs::Odometry::ConstPtr& msg) {
@@ -85,10 +85,10 @@ bool Robot::followTheCarrot() {
     command_publisher_->publish(command);
     return true;
   } else {
-    while (!plan_.empty() && plan_.front().distanceTo(robot_pose_) < threshold_) {
+    while ((!plan_.empty() && plan_.front().distanceTo(robot_pose_) < thresholdT_) ) {//&& plan_.front().angleTo(robot_pose_) < thresholdR_
       plan_.pop_front();
     }
-    if(plan_.empty())
+    if(plan_.empty())   
         return true;
     Waypoint actual_goal = plan_.front();
     const double dist = actual_goal.distanceTo(robot_pose_);
@@ -120,7 +120,7 @@ bool Robot::followTheCarrot() {
 
     ROS_INFO("time to goal %f ", time_to_goal);
     double speed;
-    double speed_limit = 0.2;
+    double speed_limit = 0.1;
     if (time_to_goal > 0) {
       speed = dist/time_to_goal;
       if(speed>speed_limit)
