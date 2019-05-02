@@ -46,10 +46,10 @@ class FrontierExplorer():
         print("rob pos ="+str(self.robotPosition))
 
         # TODO: Then, copy the occupancy grid into some temporary variable and inflate the obstacles
-        threshold = 0
+        threshold = 50
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(3,3))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(4,4))
         tmpGrid = np.reshape(inflated_grid,self.gridInfo.height*self.gridInfo.width)
         #tmpGrid = tmpGrid <= threshold
         print("grid="+str(tmpGrid))

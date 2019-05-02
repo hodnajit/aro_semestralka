@@ -55,7 +55,7 @@ class PathPlanner():
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
         #print(tmpGrid)
         print("shape="+str(tmpGrid.shape))
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(3,3))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(4,4))
         print("INFLATED")
         #print(inflated_grid)
         #print("tmpGrid="+str(tmpGrid.shape))
