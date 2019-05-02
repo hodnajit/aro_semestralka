@@ -1,6 +1,0 @@
-set(exploration_SETUP_PY_VERSION "0.0.0")
-set(exploration_SETUP_PY_SCRIPTS "")
-set(exploration_SETUP_PY_PACKAGES "exploration")
-set(exploration_SETUP_PY_PACKAGE_DIRS "src/exploration")
-set(exploration_SETUP_PY_MODULES "")
-set(exploration_SETUP_PY_MODULE_DIRS "")

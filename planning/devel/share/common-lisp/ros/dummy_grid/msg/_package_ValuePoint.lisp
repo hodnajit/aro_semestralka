@@ -1,1 +1,0 @@
-/home/cras/python/aro/hw3/devel/.private/dummy_grid/share/common-lisp/ros/dummy_grid/msg/_package_ValuePoint.lisp

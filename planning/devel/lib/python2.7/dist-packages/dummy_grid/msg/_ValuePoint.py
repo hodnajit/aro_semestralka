@@ -1,1 +1,0 @@
-/home/cras/python/aro/hw3/devel/.private/dummy_grid/lib/python2.7/dist-packages/dummy_grid/msg/_ValuePoint.py

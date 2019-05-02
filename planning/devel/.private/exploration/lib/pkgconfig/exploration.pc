@@ -1,8 +1,0 @@
-prefix=/home/cras/python/aro/hw3/devel/.private/exploration
-
-Name: exploration
-Description: Description of exploration
-Version: 0.0.0
-Cflags: -I/home/cras/python/aro/hw3/devel/.private/exploration/include
-Libs: -L/home/cras/python/aro/hw3/devel/.private/exploration/lib 
-Requires: rospy message_runtime
