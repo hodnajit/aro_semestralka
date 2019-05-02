@@ -1,0 +1,8 @@
+prefix=/home/cras/python/aro/hw3/devel/.private/dummy_grid
+
+Name: dummy_grid
+Description: Description of dummy_grid
+Version: 0.0.0
+Cflags: -I/home/cras/python/aro/hw3/devel/.private/dummy_grid/include
+Libs: -L/home/cras/python/aro/hw3/devel/.private/dummy_grid/lib 
+Requires: rospy message_runtime

@@ -1,0 +1,6 @@
+<launch>
+    <!-- Feel free to add some command line arguments and parameters -->
+    
+    <node name="planner" pkg="exploration" type="planner.py" output="screen" />
+    <node name="frontier_explorer" pkg="exploration" type="frontier.py" output="screen" />
+</launch>

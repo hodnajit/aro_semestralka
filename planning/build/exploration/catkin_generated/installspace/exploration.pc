@@ -1,0 +1,8 @@
+prefix=/home/cras/python/aro/hw3/install
+
+Name: exploration
+Description: Description of exploration
+Version: 0.0.0
+Cflags: -I/home/cras/python/aro/hw3/install/include
+Libs: -L/home/cras/python/aro/hw3/install/lib 
+Requires: rospy message_runtime

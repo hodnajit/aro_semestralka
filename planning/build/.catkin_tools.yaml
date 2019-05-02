@@ -1,0 +1,6 @@
+devel_space: /home/cras/python/aro/hw3/devel
+install: false
+install_space: /home/cras/python/aro/hw3/install
+profile: default
+source_space: /home/cras/python/aro/hw3/src
+workspace: /home/cras/python/aro/hw3

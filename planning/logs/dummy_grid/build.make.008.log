@@ -1,0 +1,13 @@
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target _dummy_grid_generate_messages_check_deps_ValuePoint
+[  0%] Built target _dummy_grid_generate_messages_check_deps_DrawGrid
+[ 15%] Built target dummy_grid_generate_messages_cpp
+[ 38%] Built target dummy_grid_generate_messages_eus
+[ 53%] Built target dummy_grid_generate_messages_nodejs
+[ 69%] Built target dummy_grid_generate_messages_lisp
+[100%] Built target dummy_grid_generate_messages_py
+[100%] Built target dummy_grid_generate_messages

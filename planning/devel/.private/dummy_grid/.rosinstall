@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/cras/python/aro/hw3/devel/.private/dummy_grid/setup.sh
