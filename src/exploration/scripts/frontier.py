@@ -8,6 +8,8 @@ from geometry_msgs.msg import Pose2D
 from exploration.srv import AnyFrontiersLeft, AnyFrontiersLeftResponse, GenerateFrontier, GenerateFrontierResponse
 import tf2_ros
 import geometry_msgs.msg
+from sensor_msgs.msg import Image
+import sys
 """
 Here are imports that you are most likely will need. However, you may wish to remove or add your own import.
 """
@@ -36,6 +38,7 @@ class FrontierExplorer():
         self.gridSubscriber = rospy.Subscriber('occupancy', OccupancyGrid, self.grid_cb)
 
         # TODO: you may wish to do initialization of other variables
+        self.image_pub = rospy.Publisher("/front_img", Image, queue_size=1)
 
     def computeWFD(self):
         """ Run the Wavefront detector """
@@ -49,7 +52,7 @@ class FrontierExplorer():
         threshold = 20
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(4,4))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(5,5))
         tmpGrid = np.reshape(inflated_grid,self.gridInfo.height*self.gridInfo.width)
         #tmpGrid = tmpGrid <= threshold
         print("grid="+str(tmpGrid))
@@ -62,12 +65,42 @@ class FrontierExplorer():
 
         """im2=np.array([50 if x==-1 else x for x in tmpGrid])
         for a in frontiers:
+            im2[(a[1])*50 + a[0]] = 75
+
+        im2 = im2.reshape(50,50)
+        self.image = im2"""
+        """im=[]
+        for x in tmpGrid:
+            if x==-1:
+                x=50
+            else:
+                if x>threshold: # i.e. obstacle
+                    x=100
+                else:
+                    x=0
+            im.append(x)
+        im2=np.array(im)
+        im2 = im2.reshape(self.gridInfo.height,self.gridInfo.width)
+        self.image = im2
+        plt.imshow(im2)
+        plt.show()"""
+        im=[]
+        for x in tmpGrid:
+            if x==-1:
+                x=50
+            else:
+                if x>threshold: # i.e. obstacle
+                    x=100
+                else:
+                    x=0
+            im.append(x)
+        im2=np.array(im)
+        #im2=np.array([50 if x==-1 else x for x in tmpGrid])
+        for a in frontiers:
             im2[(a[1])*self.gridInfo.width + a[0]] = 75
 
         im2 = im2.reshape(self.gridInfo.height,self.gridInfo.width)
         self.image = im2
-        #plt.imshow(im2)
-        #plt.show()"""
 
         return frontiers
 
@@ -75,8 +108,8 @@ class FrontierExplorer():
         """ Check if there are any frontiers left """
         # Run the WFD
         frontiers = self.computeWFD()
-        # plt.imshow(self.image)
-        # plt.show()
+        #plt.imshow(self.image)
+        #plt.show()
         # Return True if there are any frontiers, False otherwise
         return AnyFrontiersLeftResponse(any_frontiers_left=bool(len(frontiers) > 0))
 
@@ -109,9 +142,18 @@ class FrontierExplorer():
         frontier = frontiers[bestFrontierIdx]
         print("Best="+str(frontier))
 
-        #self.image[frontier[1],frontier[0]] = 25
+        self.image[frontier[1],frontier[0]] = 25
         #plt.imshow(self.image)
         #plt.show()
+        msg = Image()
+        msg.header.stamp = rospy.Time.now()
+        msg.data = self.image.tostring() #in_image.tostring()
+        msg.height = self.image.shape[0]
+        msg.width = self.image.shape[1]
+        msg.step = sys.getsizeof(self.image.shape[1])
+        msg.encoding = 'rgb8'
+        msg.is_bigendian = 0
+        self.image_pub.publish(msg)
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute the center of the chosen frontier
         x, y = utils.gridToMapCoordinates(frontier, self.gridInfo)  # TODO: compute the index of the best frontier

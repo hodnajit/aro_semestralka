@@ -80,9 +80,9 @@ def detectFrontiers(start,grid,rows,cols,threshold):
     #np.set_printoptions(threshold=sys.maxsize)
     #print(grid.reshape(50,50))
     #plt.scatter(range(0,50),range(0,50),c=grid.reshape(50,50))
-    im=np.array([50 if x==-1 else x for x in grid])
-    im = im.reshape(rows,cols)
-    plt.imshow(im)
+    #im=np.array([50 if x==-1 else x for x in grid])
+    #im = im.reshape(rows,cols)
+    #plt.imshow(im)
     #plt.show()
 
     frontiers = []
@@ -182,7 +182,7 @@ def getNeighbours(node,grid,rows,cols,threshold):
     ret = []
 
     parentInd = node.gridIndex
-    parentR = int(parentInd / rows)
+    parentR = int(parentInd / cols)
     parentC = int(parentInd % cols)
     #print("parent="+str(parentR)+","+str(parentC))
 
