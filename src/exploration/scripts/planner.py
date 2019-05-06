@@ -49,7 +49,7 @@ class PathPlanner():
         #print("rob grid="+str(gridPos))
 
         # TODO: Then, copy the occupancy grid into some temporary variable and inflate the obstacles
-        threshold = 0
+        threshold = 20
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         #np.set_printoptions(threshold=sys.maxsize)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))

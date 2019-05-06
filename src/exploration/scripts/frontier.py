@@ -46,7 +46,7 @@ class FrontierExplorer():
         print("rob pos ="+str(self.robotPosition))
 
         # TODO: Then, copy the occupancy grid into some temporary variable and inflate the obstacles
-        threshold = 50
+        threshold = 20
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
         inflated_grid = morphology.grey_dilation(tmpGrid,size=(4,4))
@@ -60,14 +60,14 @@ class FrontierExplorer():
         fronti=[utils.gridToMapCoordinates(waypoint, self.gridInfo) for waypoint in frontiers]
         print(fronti)
 
-        im2=np.array([50 if x==-1 else x for x in tmpGrid])
+        """im2=np.array([50 if x==-1 else x for x in tmpGrid])
         for a in frontiers:
             im2[(a[1])*self.gridInfo.width + a[0]] = 75
 
         im2 = im2.reshape(self.gridInfo.height,self.gridInfo.width)
         self.image = im2
         #plt.imshow(im2)
-        #plt.show()
+        #plt.show()"""
 
         return frontiers
 
@@ -75,8 +75,8 @@ class FrontierExplorer():
         """ Check if there are any frontiers left """
         # Run the WFD
         frontiers = self.computeWFD()
-        plt.imshow(self.image)
-        plt.show()
+        # plt.imshow(self.image)
+        # plt.show()
         # Return True if there are any frontiers, False otherwise
         return AnyFrontiersLeftResponse(any_frontiers_left=bool(len(frontiers) > 0))
 
@@ -92,9 +92,9 @@ class FrontierExplorer():
         frontier = frontiers[frontierInd]
         print("Random="+str(frontier))
 
-        self.image[frontier[1],frontier[0]] = 25
-        plt.imshow(self.image)
-        plt.show()
+        #self.image[frontier[1],frontier[0]] = 25
+        #plt.imshow(self.image)
+        #plt.show()
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute center of the randomly drawn frontier here
         x, y = utils.gridToMapCoordinates(frontier, self.gridInfo)  # TODO: transform the coordinates from grid to real-world coordinates (in meters)
@@ -109,9 +109,9 @@ class FrontierExplorer():
         frontier = frontiers[bestFrontierIdx]
         print("Best="+str(frontier))
 
-        self.image[frontier[1],frontier[0]] = 25
-        plt.imshow(self.image)
-        plt.show()
+        #self.image[frontier[1],frontier[0]] = 25
+        #plt.imshow(self.image)
+        #plt.show()
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute the center of the chosen frontier
         x, y = utils.gridToMapCoordinates(frontier, self.gridInfo)  # TODO: compute the index of the best frontier

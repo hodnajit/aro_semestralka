@@ -97,7 +97,7 @@ def detectFrontiers(start,grid,rows,cols,threshold):
             #print("CLOSED!")
             continue
 
-        if isFrontier(p,grid,cols,threshold):
+        if isFrontier(p, grid, rows, cols, threshold):
             frontierOpen.append(p)
 
             while len(frontierOpen)>0:
@@ -107,7 +107,7 @@ def detectFrontiers(start,grid,rows,cols,threshold):
                     continue
                 if q in frontierClosed:
                     continue
-                if isFrontier(q,grid,cols,threshold):
+                if isFrontier(q,grid,rows,cols,threshold):
                     newFrontiers.append(q)
                     neighbours = getNeighbours(q,grid,rows,cols,threshold)
                     for w in neighbours:
@@ -159,7 +159,7 @@ def returnFrontiers(frontiers,cols):
     print(ret)
     return ret
 
-def isFrontier(node,grid,cols,threshold):
+def isFrontier(node,grid,rows, cols,threshold):
     if node.value > -1:
         return False
 

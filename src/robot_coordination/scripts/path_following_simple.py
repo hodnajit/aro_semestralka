@@ -113,7 +113,7 @@ def create_trajectory(data):
         waypoint.timepoint = rospy.Duration.from_sec(r[2])
         waypoint_list.append(waypoint)
     """
-    #tmpData = data.poses[::2]
+    tmpData = data.poses#[::2]
     tmpData = tmpData[2:len(tmpData)-3]
     for waypoint_tmp in tmpData:
         waypoint = Waypoint()
