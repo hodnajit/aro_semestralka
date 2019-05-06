@@ -98,7 +98,7 @@ class IcpSlam2dNode(object):
         stop = False
         tmp = 0
         counter = 0
-        print("-----------------------")
+        # print("-----------------------")
         for i in range(0,len(x[0])):
             dist = (x[0, i]-x[1, i])**2
             dist = math.sqrt(dist)
@@ -108,14 +108,14 @@ class IcpSlam2dNode(object):
             if (counter > len(x[0])*0.1):
                 if(tmp > len(x[0])*0.1*0.40):
                     stop = True
-                print("z = " + str(counter) + "je tolik = " + str(tmp))
+                # print("z = " + str(counter) + "je tolik = " + str(tmp))
                 tmp = 0
                 counter = 0
             counter = counter+1
 
         x = filter_grid(x, self.grid_res)
         
-        print("Zastavujeme? " + str(stop))
+        # print("Zastavujeme? " + str(stop))
         self.stop_pub.publish(stop)
 
         self.filtered_points_pub.publish(cloud_msg(x, stamp, self.tracked_frame))
