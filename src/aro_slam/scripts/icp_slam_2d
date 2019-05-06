@@ -14,10 +14,13 @@ from nav_msgs.msg import OccupancyGrid
 import numpy as np
 import rospy
 from sensor_msgs.msg import LaserScan, PointCloud2
+from std_msgs.msg import Bool
 from timeit import default_timer as timer
 import tf2_ros
 # Needed for tf2_ros.Buffer.transform(cloud)
 from tf2_sensor_msgs.tf2_sensor_msgs import do_transform_cloud
+
+import math
 
 
 class IcpSlam2dNode(object):
@@ -67,6 +70,8 @@ class IcpSlam2dNode(object):
         self.R = None
         self.t = None
 
+        self.stop = False
+
         self.filtered_points_pub = rospy.Publisher('filtered_cloud', PointCloud2, queue_size=2)
         self.registered_points_pub = rospy.Publisher('registered_cloud', PointCloud2, queue_size=2)
         self.map_pub = rospy.Publisher('point_map', PointCloud2, queue_size=2)
@@ -76,6 +81,9 @@ class IcpSlam2dNode(object):
         self.scan_sub = rospy.Subscriber('scan', LaserScan, self.scan_cb, queue_size=2)
         self.points_sub = rospy.Subscriber('cloud', PointCloud2, self.points_cb, queue_size=2)
 
+        self.stop_pub = rospy.Publisher('stop', Bool, queue_size=2)
+
+
     def last_update_too_old(self, stamp):
         return stamp - self.last_update_stamp >= rospy.Duration(self.map_update_interval)
 
@@ -83,8 +91,33 @@ class IcpSlam2dNode(object):
         t0 = timer()
         stamp = msg.header.stamp
         msg = self.tf.transform(msg, self.tracked_frame)
+        
         x = points_from_msg(msg)
+
+        # Svetelny bumper
+        stop = False
+        tmp = 0
+        counter = 0
+        # print("-----------------------")
+        for i in range(0,len(x[0])):
+            dist = (x[0, i]-x[1, i])**2
+            dist = math.sqrt(dist)
+            # print("Distance = " + str(dist))
+            if dist < 0.23:
+                tmp = tmp+1
+            if (counter > len(x[0])*0.1):
+                if(tmp > len(x[0])*0.1*0.40):
+                    stop = True
+                # print("z = " + str(counter) + "je tolik = " + str(tmp))
+                tmp = 0
+                counter = 0
+            counter = counter+1
+
         x = filter_grid(x, self.grid_res)
+        
+        # print("Zastavujeme? " + str(stop))
+        self.stop_pub.publish(stop)
+
         self.filtered_points_pub.publish(cloud_msg(x, stamp, self.tracked_frame))
         # Align query points with the point map.
         if self.map.empty():

@@ -5,18 +5,22 @@ import time
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PointStamped
-from std_msgs.msg import Int32
+from std_msgs.msg import Int32, Bool
 from robot_coordination.msg import Waypoint
 from robot_coordination.srv import AddPath
 from robot_coordination.srv import StartMovement
 from robot_coordination.srv import StopMovement
 import rospy
 from nav_msgs.msg import Path
+from sensor_msgs.msg import LaserScan
+from laser_geometry.laser_geometry import LaserProjection
+
 
 class PathFollowing:
     def __init__(self):
         self.state_sub = rospy.Subscriber('waypoints_ahead', Int32, self.callback_state)
         self.state_sub = rospy.Subscriber('path_waypoints', Path, self.callback_path)
+        self.stop_sub = rospy.Subscriber('stop', Bool, self.callback_stop)
         self.odom_frame = rospy.get_param('~odom_frame', 'odom')
         self.robot_frame = rospy.get_param('~robot_frame', 'base_link')
         self.waypoints_ahead = 0
@@ -35,6 +39,14 @@ class PathFollowing:
         if not self.start_movement(backwards=False):
             rospy.logerr('Could not start motion, exiting')
         rospy.loginfo('Movement started')
+
+    def callback_stop(self, msg):
+        # pro opticky bumper, zatim nefacha uplne dobre
+        '''if msg.data == True:
+            self.stop_movement
+            print("Nikam nepojedu. Tecka.")
+        else:
+            print("Uz frcim.")'''
 
 
     def wait_for_service(self, srv_name):
@@ -132,6 +144,7 @@ def main():
 
 
     while not rospy.is_shutdown():
+
         rate.sleep()
 
 
