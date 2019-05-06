@@ -10,7 +10,7 @@ from exploration.srv import PlanPath,  PlanPathRequest, PlanPathResponse
 import numpy as np
 
 if __name__ == "__main__":
-    rospy.init_node("frontier_planner")
+    rospy.init_node("frontier_planner_cam")
     print("start")
 
     cmd = rospy.get_param("~cmd", "random")
@@ -23,19 +23,19 @@ if __name__ == "__main__":
     print("frontier planning started")
     any = True
     while any and not rospy.is_shutdown():
-        rospy.wait_for_service("any_frontiers_left")
-        caller = rospy.ServiceProxy("any_frontiers_left", AnyFrontiersLeft)
+        rospy.wait_for_service("any_frontiers_left_cam")
+        caller = rospy.ServiceProxy("any_frontiers_left_cam", AnyFrontiersLeft)
         #rospy.loginfo(caller.call())
         response = caller.call()
         any = response.any_frontiers_left
         print(any)
         if cmd.lower() == "random":
-            rospy.wait_for_service("get_random_frontier")
-            caller = rospy.ServiceProxy("get_random_frontier", GenerateFrontier)
+            rospy.wait_for_service("get_random_frontier_cam")
+            caller = rospy.ServiceProxy("get_random_frontier_cam", GenerateFrontier)
 
         elif cmd.lower() == "near":
-            rospy.wait_for_service("get_closest_frontier")
-            caller = rospy.ServiceProxy("get_closest_frontier", GenerateFrontier)
+            rospy.wait_for_service("get_closest_frontier_cam")
+            caller = rospy.ServiceProxy("get_closest_frontier_cam", GenerateFrontier)
             
         response = caller.call()
         rospy.sleep(0.5)
