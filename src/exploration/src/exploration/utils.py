@@ -62,7 +62,7 @@ class NodeB:
         sameVal = self.value == other.value
         return (sameInd and sameVal)
 
-def detectFrontiers(start,grid,cols,threshold):
+def detectFrontiers(start,grid,rows,cols,threshold):
 
     startInd = (start[1]*cols) + start[0]
     start = NodeB()
@@ -80,9 +80,9 @@ def detectFrontiers(start,grid,cols,threshold):
     #np.set_printoptions(threshold=sys.maxsize)
     #print(grid.reshape(50,50))
     #plt.scatter(range(0,50),range(0,50),c=grid.reshape(50,50))
-    """im=np.array([50 if x==-1 else x for x in grid])
-    im = im.reshape(50,50)
-    plt.imshow(im)"""
+    im=np.array([50 if x==-1 else x for x in grid])
+    im = im.reshape(rows,cols)
+    plt.imshow(im)
     #plt.show()
 
     frontiers = []
@@ -109,7 +109,7 @@ def detectFrontiers(start,grid,cols,threshold):
                     continue
                 if isFrontier(q,grid,cols,threshold):
                     newFrontiers.append(q)
-                    neighbours = getNeighbours(q,grid,cols,threshold)
+                    neighbours = getNeighbours(q,grid,rows,cols,threshold)
                     for w in neighbours:
                         isFrontierOpen = w in frontierOpen
                         isFrontierClosed = w in frontierClosed
@@ -125,13 +125,13 @@ def detectFrontiers(start,grid,cols,threshold):
             print("found frontiers="+str(newFrontiers))
             newFrontiers = []
 
-        neighboursP = getNeighbours(p,grid,cols,threshold)
+        neighboursP = getNeighbours(p,grid,rows,cols,threshold)
         for v in neighboursP:
             isMapOpen = v in mapOpen
             isMapClosed = v in mapClosed
             isWorth = (not isMapOpen) and (not isMapClosed)
             if isWorth:
-                neighboursV = getNeighbours(v,grid,cols,threshold)
+                neighboursV = getNeighbours(v,grid,rows,cols,threshold)
                 isOpenSpace = any(x.value > -1 for x in neighboursV)
                 #isOpenSpace = True in openSpace
                 isOK = isWorth and isOpenSpace
@@ -163,14 +163,14 @@ def isFrontier(node,grid,cols,threshold):
     if node.value > -1:
         return False
 
-    neighbours = getNeighbours(node,grid,cols,threshold)
+    neighbours = getNeighbours(node,grid,rows,cols,threshold)
     print("Neighbours="+str(neighbours))
     #tmpPri = neighbours
     #tmpPri.insert(4,'ahoj')
     #print(tmpPri.reshape(3,3))
-    okoli = [x.value > -1 for x in neighbours]
-    okoli.insert(4,'ahoj')
-    print("Okoli="+str(okoli))
+    #okoli = [x.value > -1 for x in neighbours]
+    #okoli.insert(4,'ahoj')
+    #print("Okoli="+str(okoli))
     openSpace = any(x.value > -1 for x in neighbours)
     print("["+str(node.gridIndex)+"]"+":"+str(node.value)+" is FRONTIER: "+str(openSpace))
 
@@ -178,43 +178,43 @@ def isFrontier(node,grid,cols,threshold):
     #    return True
     return openSpace
 
-def getNeighbours(node,grid,cols,threshold):
+def getNeighbours(node,grid,rows,cols,threshold):
     ret = []
 
     parentInd = node.gridIndex
-    parentR = int(parentInd / cols)
+    parentR = int(parentInd / rows)
     parentC = int(parentInd % cols)
     #print("parent="+str(parentR)+","+str(parentC))
 
-    if ((parentR-1)>0) and ((parentR-1)<50) and ((parentC-1)>0) and ((parentC-1)<50):
+    if ((parentR-1)>0) and ((parentR-1)<rows) and ((parentC-1)>0) and ((parentC-1)<cols):
         nodeInd = (parentR-1)*cols + parentC-1
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR-1)>0) and ((parentR-1)<50) and ((parentC)>0) and ((parentC)<50):
+    if ((parentR-1)>0) and ((parentR-1)<rows) and ((parentC)>0) and ((parentC)<cols):
         nodeInd = (parentR-1)*cols + parentC
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR-1)>0) and ((parentR-1)<50) and ((parentC+1)>0) and ((parentC+1)<50):
+    if ((parentR-1)>0) and ((parentR-1)<rows) and ((parentC+1)>0) and ((parentC+1)<cols):
         nodeInd = (parentR-1)*cols + parentC+1
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR)>0) and ((parentR)<50) and ((parentC-1)>0) and ((parentC-1)<50):
+    if ((parentR)>0) and ((parentR)<rows) and ((parentC-1)>0) and ((parentC-1)<cols):
         nodeInd = (parentR)*cols + parentC-1
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR)>0) and ((parentR)<50) and ((parentC+1)>0) and ((parentC+1)<50):
+    if ((parentR)>0) and ((parentR)<rows) and ((parentC+1)>0) and ((parentC+1)<cols):
         nodeInd = (parentR)*cols + parentC+1
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR+1)>0) and ((parentR+1)<50) and ((parentC-1)>0) and ((parentC-1)<50):
+    if ((parentR+1)>0) and ((parentR+1)<rows) and ((parentC-1)>0) and ((parentC-1)<cols):
         nodeInd = (parentR+1)*cols + parentC-1
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR+1)>0) and ((parentR+1)<50) and ((parentC)>0) and ((parentC)<50):
+    if ((parentR+1)>0) and ((parentR+1)<rows) and ((parentC)>0) and ((parentC)<cols):
         nodeInd = (parentR+1)*cols + parentC
         ret=addNode(nodeInd,grid,ret,threshold)
 
-    if ((parentR+1)>0) and ((parentR+1)<50) and ((parentC+1)>0) and ((parentC+1)<50):
+    if ((parentR+1)>0) and ((parentR+1)<rows) and ((parentC+1)>0) and ((parentC+1)<cols):
         nodeInd = (parentR+1)*cols + parentC+1
         ret=addNode(nodeInd,grid,ret,threshold)
 
@@ -223,7 +223,7 @@ def getNeighbours(node,grid,cols,threshold):
 def addNode(nodeInd,grid,ret,threshold):
     if nodeInd >= 0 and nodeInd < len(grid):
         if grid[nodeInd]>threshold:
-            #parentR = int(nodeInd / cols)
+            #parentR = int(nodeInd / rows)
             #parentC = int(nodeInd % cols)
             #print("Prekazka: "+str(parentR)+","+str(parentC))
             return ret
@@ -300,7 +300,7 @@ def AstarSearch(start, goal, grid, rows, cols):
 #        print("open="+str(open))
 #        print("closed="+str(closed))
         #print("openinds="+str(open[0,:]))
-        add = getSuccessors(q,grid,cols)
+        add = getSuccessors(q,grid,rows,cols)
 
         for succ in add:
             #print("now:"+str(succ.gridIndex))
@@ -371,7 +371,7 @@ def euclidianDistance(start,goal,cols):
     return h
 
 
-def getSuccessors(node,grid,cols):
+def getSuccessors(node,grid,rows,cols):
     ret = []
 
     parentInd = node.gridIndex
@@ -379,36 +379,36 @@ def getSuccessors(node,grid,cols):
     parentC = int(parentInd % cols)
     #print("parent="+str(parentR)+","+str(parentC))
 
-    if ((parentR-1)>0) and ((parentR-1)<50) and ((parentC-1)>0) and ((parentC-1)<50):
+    if ((parentR-1)>0) and ((parentR-1)<rows) and ((parentC-1)>0) and ((parentC-1)<cols):
         succInd = (parentR-1)*cols + parentC-1
         #print("succInd="+str(succInd))
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR-1)>0) and ((parentR-1)<50) and ((parentC)>0) and ((parentC)<50):
+    if ((parentR-1)>0) and ((parentR-1)<rows) and ((parentC)>0) and ((parentC)<cols):
         succInd = (parentR-1)*cols + parentC
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR-1)>0) and ((parentR-1)<50) and ((parentC+1)>0) and ((parentC+1)<50):
+    if ((parentR-1)>0) and ((parentR-1)<rows) and ((parentC+1)>0) and ((parentC+1)<cols):
         succInd = (parentR-1)*cols + parentC+1
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR)>0) and ((parentR)<50) and ((parentC-1)>0) and ((parentC-1)<50):
+    if ((parentR)>0) and ((parentR)<rows) and ((parentC-1)>0) and ((parentC-1)<cols):
         succInd = (parentR)*cols + parentC-1
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR)>0) and ((parentR)<50) and ((parentC+1)>0) and ((parentC+1)<50):
+    if ((parentR)>0) and ((parentR)<rows) and ((parentC+1)>0) and ((parentC+1)<cols):
         succInd = (parentR)*cols + parentC+1
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR+1)>0) and ((parentR+1)<50) and ((parentC-1)>0) and ((parentC-1)<50):
+    if ((parentR+1)>0) and ((parentR+1)<rows) and ((parentC-1)>0) and ((parentC-1)<cols):
         succInd = (parentR+1)*cols + parentC-1
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR+1)>0) and ((parentR+1)<50) and ((parentC)>0) and ((parentC)<50):
+    if ((parentR+1)>0) and ((parentR+1)<rows) and ((parentC)>0) and ((parentC)<cols):
         succInd = (parentR+1)*cols + parentC
         ret=addSucc(node,succInd,grid,ret)
 
-    if ((parentR+1)>0) and ((parentR+1)<50) and ((parentC+1)>0) and ((parentC+1)<50):
+    if ((parentR+1)>0) and ((parentR+1)<rows) and ((parentC+1)>0) and ((parentC+1)<cols):
         succInd = (parentR+1)*cols + parentC+1
         ret=addSucc(node,succInd,grid,ret)
 
@@ -419,8 +419,8 @@ def getSuccessors(node,grid,cols):
 def addSucc(parent,succInd,grid,ret):
     if succInd >= 0 and succInd < len(grid): #and grid[succInd]==True:
         if grid[succInd]==False:
-            parentR = int(succInd / 50)
-            parentC = int(succInd % 50)
+            #parentR = int(succInd / 50)
+            #parentC = int(succInd % 50)
             #print("Prekazka: "+str(parentR)+","+str(parentC))
             return ret
         #succ = np.array([[succInd],[0],[0],[0],[parentInd]])
