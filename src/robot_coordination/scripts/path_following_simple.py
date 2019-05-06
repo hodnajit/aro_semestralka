@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 # An example script to send a trajectory to a robot, start and stop the motion.
 import time
-import geometry_msgs.msg 
+import geometry_msgs.msg
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PointStamped
 from std_msgs.msg import Int32
@@ -21,7 +21,7 @@ class PathFollowing:
         self.robot_frame = rospy.get_param('~robot_frame', 'base_link')
         self.waypoints_ahead = 0
         self.waypoints_ahead_updated = False
-            
+
     def callback_state(self, msg):
         self.waypoints_ahead = msg.data
         self.waypoints_ahead_updated = True
@@ -36,7 +36,7 @@ class PathFollowing:
             rospy.logerr('Could not start motion, exiting')
         rospy.loginfo('Movement started')
 
-            
+
     def wait_for_service(self, srv_name):
         """Wait for a service called srv_name."""
         while not rospy.is_shutdown():
@@ -87,15 +87,15 @@ class PathFollowing:
         except rospy.ServiceException as e:
             rospy.logerr('Service call failed: {}'.format(e))
         return False
-        
+
     def path_finished(self):
         return (self.waypoints_ahead <= 0) and self.waypoints_ahead_updated
-       
+
 def create_trajectory(data):
     """ Create a trajectory in the odometry frame. """
     # x,y,time
     """
-    gtr = [ 
+    gtr = [
         [-0.1, -0.1, 0],
         [-0.2, -0.2, 0],
         [-0.3, -0.3, 0],
@@ -113,10 +113,12 @@ def create_trajectory(data):
         waypoint.timepoint = rospy.Duration.from_sec(r[2])
         waypoint_list.append(waypoint)
     """
-    for waypoint_tmp in data.poses[::2]:
+    #tmpData = data.poses[::2]
+    tmpData = tmpData[2:len(tmpData)-3]
+    for waypoint_tmp in tmpData:
         waypoint = Waypoint()
         waypoint.pose = Pose()
-        waypoint.pose = waypoint_tmp.pose 
+        waypoint.pose = waypoint_tmp.pose
         waypoint.timepoint = rospy.Duration.from_sec(15)
         waypoint_list.append(waypoint)
 
@@ -124,11 +126,11 @@ def create_trajectory(data):
 
 def main():
     rospy.init_node('fetch_barbie')
-    
+
     pf = PathFollowing()
     rate = rospy.Rate(10)
 
-    
+
     while not rospy.is_shutdown():
         rate.sleep()
 
