@@ -23,12 +23,13 @@ if __name__ == "__main__":
     print("frontier planning started")
     any = True
     while any and not rospy.is_shutdown():
-        rospy.wait_for_service("any_frontiers_left")
-        caller = rospy.ServiceProxy("any_frontiers_left", AnyFrontiersLeft)
+        #rospy.wait_for_service("any_frontiers_left")
+        #caller = rospy.ServiceProxy("any_frontiers_left", AnyFrontiersLeft)
         #rospy.loginfo(caller.call())
-        response = caller.call()
-        any = response.any_frontiers_left
-        print(any)
+        #print("mame dalsi frontiery?")
+        #response = caller.call()
+        #any = response.any_frontiers_left
+        #print(any)
         if cmd.lower() == "random":
             rospy.wait_for_service("get_random_frontier")
             caller = rospy.ServiceProxy("get_random_frontier", GenerateFrontier)
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         elif cmd.lower() == "near":
             rospy.wait_for_service("get_closest_frontier")
             caller = rospy.ServiceProxy("get_closest_frontier", GenerateFrontier)
-            
+
         response = caller.call()
         rospy.sleep(0.5)
         header = Header(stamp=rospy.Time.now(), frame_id="map")
@@ -66,4 +67,6 @@ if __name__ == "__main__":
 
         path_points.poses = poses
         path_pub.publish(path_points)
-        rospy.sleep(60)
+        print("cekam az dojede pohyb")
+        rospy.sleep(3)
+        print("pracuju")

@@ -49,7 +49,7 @@ class PathPlanner():
         #print("rob grid="+str(gridPos))
 
         # TODO: Then, copy the occupancy grid into some temporary variable and inflate the obstacles
-        threshold = 20
+        threshold = 50
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         #np.set_printoptions(threshold=sys.maxsize)
         boundaries = (int(np.round((self.robotDiameter)/self.gridInfo.resolution)))
@@ -57,7 +57,7 @@ class PathPlanner():
         #print(tmpGrid)
         print("shape="+str(tmpGrid.shape))
 
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(6,6))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(8,8))
 
         print("INFLATED")
         #print(inflated_grid)
@@ -81,7 +81,7 @@ class PathPlanner():
         print("goalGrid="+str(goalPositionGrid))
         #path=[]
         path = utils.AstarSearch(self.robotPosition,goalPositionGrid, tmpGrid, rows, cols)
-        print(path)
+        ##print(path)
 
         """ transform each point into real-world coordinates """
         real_path = [Pose2D(pos[0], pos[1], 0) for pos in [utils.gridToMapCoordinates(waypoint, self.gridInfo) for waypoint in path]]
@@ -114,10 +114,10 @@ class PathPlanner():
         pass
 
     def grid_cb(self, msg):
-        print("OCCUPANCY GRID"),
+        ##print("OCCUPANCY GRID"),
         #print(msg)
         #print("msg data="+str(msg.data))
-        print("size="+str(len(msg.data)))
+        ##print("size="+str(len(msg.data)))
         self.extractGrid(msg)
         if not self.gridReady:
             # TODO: Do some initialization of necessary variables
