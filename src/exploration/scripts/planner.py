@@ -21,7 +21,7 @@ class PathPlanner():
         rospy.init_node("path_planner")
 
         # Get some useful parameters
-        self.robotDiameter = float(rospy.get_param("~robot_diameter", 0.2))
+        self.robotDiameter = float(rospy.get_param("~robot_diameter", 20))
         self.occupancyThreshold = int(rospy.get_param("/occupancy_threshold", 10))
 
         # Helper variable to determine if grid was received at least once
@@ -52,10 +52,13 @@ class PathPlanner():
         threshold = 20
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         #np.set_printoptions(threshold=sys.maxsize)
-        tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
+        boundaries = (int(np.round((self.robotDiameter)/self.gridInfo.resolution)))
+        tmpGrid = np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
         #print(tmpGrid)
         print("shape="+str(tmpGrid.shape))
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(5,5))
+
+        inflated_grid = morphology.grey_dilation(tmpGrid,footprint=np.ones(((boundaries,boundaries))))
+
         print("INFLATED")
         #print(inflated_grid)
         #print("tmpGrid="+str(tmpGrid.shape))
