@@ -75,8 +75,8 @@ def detectFrontiers(start,grid,rows,cols,threshold):
     frontierClosed = []
 
     mapOpen.append(start)
-    print("MAP:")
-    print(mapOpen)
+    ##print("MAP:")
+    ##print(mapOpen)
     #np.set_printoptions(threshold=sys.maxsize)
     #print(grid.reshape(50,50))
     #plt.scatter(range(0,50),range(0,50),c=grid.reshape(50,50))
@@ -122,7 +122,7 @@ def detectFrontiers(start,grid,rows,cols,threshold):
             for i in newFrontiers:
                 mapClosed.append(i)
                 frontiers.append(i)
-            print("found frontiers="+str(newFrontiers))
+            #print("found frontiers="+str(newFrontiers))
             newFrontiers = []
 
         neighboursP = getNeighbours(p,grid,rows,cols,threshold)
@@ -142,7 +142,7 @@ def detectFrontiers(start,grid,rows,cols,threshold):
         mapClosed.append(p)
 
     print("DONE")
-    print(frontiers)
+    ##print(frontiers)
 
     return returnFrontiers(frontiers,cols)
 
@@ -155,8 +155,10 @@ def returnFrontiers(frontiers,cols):
         val = np.array([[parentC],[parentR]])
         ret.append(val)
 
-    print("Frontiers:")
-    print(ret)
+    #print("Frontiers:")
+    #print(ret)
+    if not (len(ret)>0):
+        print("frontieri jsou prazdny pole")
     return ret
 
 def isFrontier(node,grid,rows, cols,threshold):
@@ -164,7 +166,7 @@ def isFrontier(node,grid,rows, cols,threshold):
         return False
 
     neighbours = getNeighbours(node,grid,rows,cols,threshold)
-    print("Neighbours="+str(neighbours))
+    ##print("Neighbours="+str(neighbours))
     #tmpPri = neighbours
     #tmpPri.insert(4,'ahoj')
     #print(tmpPri.reshape(3,3))
@@ -172,7 +174,7 @@ def isFrontier(node,grid,rows, cols,threshold):
     #okoli.insert(4,'ahoj')
     #print("Okoli="+str(okoli))
     openSpace = any(x.value > -1 for x in neighbours)
-    print("["+str(node.gridIndex)+"]"+":"+str(node.value)+" is FRONTIER: "+str(openSpace))
+    ##print("["+str(node.gridIndex)+"]"+":"+str(node.value)+" is FRONTIER: "+str(openSpace))
 
     #if True in openSpace:
     #    return True
@@ -265,11 +267,11 @@ def AstarSearch(start, goal, grid, rows, cols):
     open.append(startNode)
     closed.append(startNode)
     #open.append(startNode)
-    print("open="+str(open))
+    ##print("open="+str(open))
     isOpened = any(x.gridIndex == startNode.gridIndex for x in open)
-    print("isopen:"+str(isOpened))
+    ##print("isopen:"+str(isOpened))
     ind = open.index(startNode)
-    print("INDEX="+str(ind))
+    ##print("INDEX="+str(ind))
     #path=startNode
 
     #open.append([start])

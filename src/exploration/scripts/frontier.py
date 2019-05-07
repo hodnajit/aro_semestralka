@@ -49,19 +49,23 @@ class FrontierExplorer():
         print("rob pos ="+str(self.robotPosition))
 
         # TODO: Then, copy the occupancy grid into some temporary variable and inflate the obstacles
-        threshold = 20
+        threshold = 50
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(7,7))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(9,9))
         tmpGrid = np.reshape(inflated_grid,self.gridInfo.height*self.gridInfo.width)
         #tmpGrid = tmpGrid <= threshold
-        print("grid="+str(tmpGrid))
+        ##print("grid="+str(tmpGrid))
 
         # TODO: Run the WFD algorithm - see the presentation slides for details on how to implement it
+        print("detecting")
+        hi = self.gridInfo.height
+        wi = self.gridInfo.width
         frontiers = utils.detectFrontiers(self.robotPosition,tmpGrid,self.gridInfo.height,self.gridInfo.width,threshold)
-        print("Transformed:")
+        ##print("Transformed:")
+        print("transforming")
         fronti=[utils.gridToMapCoordinates(waypoint, self.gridInfo) for waypoint in frontiers]
-        print(fronti)
+        ##print(fronti)
 
         """im2=np.array([50 if x==-1 else x for x in tmpGrid])
         for a in frontiers:
@@ -99,7 +103,11 @@ class FrontierExplorer():
         for a in frontiers:
             im2[(a[1])*self.gridInfo.width + a[0]] = 75
 
-        im2 = im2.reshape(self.gridInfo.height,self.gridInfo.width)
+        print("reshaping image")
+        try:
+            im2 = im2.reshape(hi,wi)
+        except:
+            print("obrazek v pici")
         self.image = im2
 
         return frontiers
@@ -142,10 +150,11 @@ class FrontierExplorer():
         frontier = frontiers[bestFrontierIdx]
         print("Best="+str(frontier))
 
+        print("making image")
         self.image[frontier[1],frontier[0]] = 25
-        #plt.imshow(self.image)
+        plt.imshow(self.image)
         #plt.show()
-        msg = Image()
+        """msg = Image()
         msg.header.stamp = rospy.Time.now()
         msg.data = self.image.tostring() #in_image.tostring()
         msg.height = self.image.shape[0]
@@ -153,11 +162,15 @@ class FrontierExplorer():
         msg.step = sys.getsizeof(self.image.shape[1])
         msg.encoding = 'rgb8'
         msg.is_bigendian = 0
-        self.image_pub.publish(msg)
+        self.image_pub.publish(msg)"""
+        strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
+        plt.savefig(strIm)
+
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute the center of the chosen frontier
         x, y = utils.gridToMapCoordinates(frontier, self.gridInfo)  # TODO: compute the index of the best frontier
         response = GenerateFrontierResponse(Pose2D(x, y, 0.0))
+        print("koncim")
         return response
 
     def getRobotCoordinates(self):
