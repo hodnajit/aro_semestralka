@@ -3,4 +3,3 @@ devel
 logs
 .catkin_tools
 *.pyc
-*.rviz
