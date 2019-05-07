@@ -20,16 +20,15 @@
         <param unless="$(arg with_odom)" name="tracked_frame" value="base_link"/>
         <param unless="$(arg with_odom)" name="map_frame" value="map"/>
         <param name="sensor_frame" value="laser"/>
-        <param name="map_update_interval" value="1.0"/>
-        <!--<param name="query_density" value="100.0"/>-->
+        <param name="map_update_interval" value="0.5"/>
         <param name="num_iters" value="100"/>
-        <param name="overlap" value="0.5"/>
-        <param name="multiplier" value="1.0"/>
-        <param name="grid_res" value="0.1"/>
+        <param name="inlier_ratio" value="0.75"/>
+        <param name="inlier_dist_mult" value="2.0"/>
+        <param name="grid_res" value="0.05"/>
+        <param name="filter_res" value="0.1"/>
 
         <remap from="scan" to="not_used"/>
         <remap from="cloud" to="cloud"/>
-        <!--<remap from="cloud" to="/camera/depth/points"/>-->
 
         <remap from="filtered_cloud" to="filtered_cloud"/>
         <remap from="registered_cloud" to="registered_cloud"/>

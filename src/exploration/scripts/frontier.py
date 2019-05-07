@@ -52,7 +52,7 @@ class FrontierExplorer():
         threshold = 20
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(5,5))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(7,7))
         tmpGrid = np.reshape(inflated_grid,self.gridInfo.height*self.gridInfo.width)
         #tmpGrid = tmpGrid <= threshold
         print("grid="+str(tmpGrid))

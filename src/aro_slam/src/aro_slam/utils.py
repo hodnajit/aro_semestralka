@@ -87,6 +87,9 @@ class PointMap(object):
 
     def empty(self):
         return self.size() == 0
+    
+    def update_index(self):
+        self.index = cKDTree(self.points.T)
 
     def update(self, x):
         if self.points is None:
@@ -98,8 +101,7 @@ class PointMap(object):
         if self.max_size is not None and self.size() > self.max_size:
             keep = np.random.choice(self.size(), self.max_size, replace=False)
             self.points = self.points[:, keep]
-        self.index = cKDTree(self.points.T)
-
+        self.update_index()
 
 def logistic(x):
     return 1. / (1. + np.exp(-x))
@@ -107,7 +109,9 @@ def logistic(x):
 
 class OccupancyMap(object):
     def __init__(self, frame_id, resolution=0.1):
-        self.voxel_map = VoxelMap(resolution, -0.5, 1.0, 0.0)
+        self.voxel_map = VoxelMap(resolution, -1.0, 2.0, 0.0)
+        self.min = -10.0
+        self.max = 10.0
         self.msg = OccupancyGrid()
         self.msg.header.frame_id = frame_id
         self.msg.info.resolution = resolution
@@ -158,19 +162,33 @@ class OccupancyMap(object):
         v[np.isnan(v)] = -1.
         self.msg.data = v.astype(int).tolist()
         return self.msg
+    
+    def voxel_map_points(self, x):
+        x = points_3d(x.copy())
+        x[2, :] = self.voxel_map.voxel_size / 2.0
+        return x
 
     def update(self, x, y, stamp):
         """Update internal occupancy map."""
-        x = points_3d(x)
-        y = points_3d(y)
+        x = self.voxel_map_points(x)
+        y = self.voxel_map_points(y)
         if x.shape[1] == 1:
             x = np.broadcast_to(x, y.shape)
         elif y.shape[1] == 1:
             y = np.broadcast_to(y, x.shape)
-        x = x.copy()
-        x[2, :] = self.voxel_map.voxel_size / 2.0
-        y = y.copy()
-        y[2, :] = self.voxel_map.voxel_size / 2.0
         self.voxel_map.update_lines(x, y)
+        self.clip_values()
         self.msg.header.stamp = stamp
         self.msg.info.map_load_time = stamp
+    
+    def occupied(self, x):
+        x = self.voxel_map_points(x)
+        l = np.zeros((x.shape[1],))
+        v = self.voxel_map.get_voxels(x, l)
+        occupied = v > self.voxel_map.occupied_threshold
+        return occupied
+    
+    def clip_values(self):
+        x, l, v = self.voxel_map.get_voxels()
+        v = np.clip(v, self.min, self.max)
+        self.voxel_map.set_voxels(x, l, v)

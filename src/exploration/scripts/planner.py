@@ -57,7 +57,7 @@ class PathPlanner():
         #print(tmpGrid)
         print("shape="+str(tmpGrid.shape))
 
-        inflated_grid = morphology.grey_dilation(tmpGrid,footprint=np.ones(((boundaries,boundaries))))
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(6,6))
 
         print("INFLATED")
         #print(inflated_grid)
