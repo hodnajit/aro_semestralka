@@ -10,8 +10,8 @@ Panels:
         - /TF1/Frames1
         - /Camera (RGB)1/Visibility1
         - /Camera (Depth)1/Visibility1
-      Splitter Ratio: 0.6551724076271057
-    Tree Height: 661
+      Splitter Ratio: 0.655172408
+    Tree Height: 677
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -20,7 +20,7 @@ Panels:
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
-    Splitter Ratio: 0.5886790156364441
+    Splitter Ratio: 0.588679016
   - Class: rviz/Views
     Expanded:
       - /Current View1
@@ -31,8 +31,6 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: Scan Cloud
-Preferences:
-  PromptSaveOnExit: true
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
@@ -67,6 +65,8 @@ Visualization Manager:
           Value: false
         map:
           Value: true
+        odom:
+          Value: true
       Marker Scale: 2
       Name: TF
       Show Arrows: true
@@ -74,22 +74,23 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          base_link:
-            camera_link:
-              camera_depth_frame:
-                camera_depth_optical_frame:
-                  {}
-              camera_ir2_frame:
-                camera_ir2_optical_frame:
-                  {}
-              camera_ir_frame:
-                camera_ir_optical_frame:
-                  {}
-              camera_rgb_frame:
-                camera_rgb_optical_frame:
-                  {}
-            laser:
-              {}
+          odom:
+            base_link:
+              camera_link:
+                camera_depth_frame:
+                  camera_depth_optical_frame:
+                    {}
+                camera_ir2_frame:
+                  camera_ir2_optical_frame:
+                    {}
+                camera_ir_frame:
+                  camera_ir_optical_frame:
+                    {}
+                camera_rgb_frame:
+                  camera_rgb_optical_frame:
+                    {}
+              laser:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 0.5
@@ -98,7 +99,7 @@ Visualization Manager:
       Color: 160; 160; 164
       Enabled: true
       Line Style:
-        Line Width: 0.029999999329447746
+        Line Width: 0.0299999993
         Value: Lines
       Name: Grid
       Normal Cell Count: 0
@@ -115,7 +116,7 @@ Visualization Manager:
       Image Rendering: overlay
       Image Topic: /camera/rgb/image_raw
       Name: Camera (RGB)
-      Overlay Alpha: 0.800000011920929
+      Overlay Alpha: 0.800000012
       Queue Size: 2
       Transport Hint: compressed
       Unreliable: false
@@ -128,6 +129,8 @@ Visualization Manager:
         Grid: true
         Laser Scan: true
         Map: true
+        Marker: true
+        MarkerArray: true
         Occupancy: true
         Point Map: true
         RGBD Points: true
@@ -142,7 +145,7 @@ Visualization Manager:
       Image Rendering: overlay
       Image Topic: /camera/depth/image_raw
       Name: Camera (Depth)
-      Overlay Alpha: 0.800000011920929
+      Overlay Alpha: 0.800000012
       Queue Size: 2
       Transport Hint: compressedDepth
       Unreliable: false
@@ -155,6 +158,8 @@ Visualization Manager:
         Grid: false
         Laser Scan: true
         Map: true
+        Marker: true
+        MarkerArray: true
         Occupancy: true
         Point Map: true
         RGBD Points: true
@@ -186,9 +191,9 @@ Visualization Manager:
       Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 0.3383067548274994
+      Max Intensity: 0.338306755
       Min Color: 0; 0; 0
-      Min Intensity: -1.008179783821106
+      Min Intensity: -1.00817978
       Name: Depth Cloud
       Occlusion Compensation:
         Occlusion Time-Out: 30
@@ -197,7 +202,7 @@ Visualization Manager:
       Queue Size: 20
       Selectable: false
       Size (Pixels): 3
-      Size (m): 0.00214924244210124
+      Size (m): 0.00214924244
       Style: Points
       Topic Filter: true
       Use Fixed Frame: true
@@ -225,9 +230,9 @@ Visualization Manager:
       Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 0.3383067548274994
+      Max Intensity: 0.338306755
       Min Color: 0; 0; 0
-      Min Intensity: -1.008179783821106
+      Min Intensity: -1.00817978
       Name: Depth Cloud (RGB)
       Occlusion Compensation:
         Occlusion Time-Out: 30
@@ -236,7 +241,7 @@ Visualization Manager:
       Queue Size: 20
       Selectable: false
       Size (Pixels): 3
-      Size (m): 0.00214924244210124
+      Size (m): 0.00214924244
       Style: Points
       Topic Filter: true
       Use Fixed Frame: true
@@ -254,24 +259,24 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 2.742000102996826
+      Max Intensity: 2.7420001
       Min Color: 0; 0; 0
-      Min Intensity: 0.6820000410079956
+      Min Intensity: 0.682000041
       Name: RGBD Points
       Position Transformer: XYZ
       Queue Size: 2
       Selectable: false
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.00999999978
       Style: Points
       Topic: /camera/depth/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -295,7 +300,7 @@ Visualization Manager:
       Queue Size: 2
       Selectable: false
       Size (Pixels): 3
-      Size (m): 0.05000000074505806
+      Size (m): 0.0500000007
       Style: Points
       Topic: /scan
       Unreliable: false
@@ -325,7 +330,7 @@ Visualization Manager:
       Queue Size: 2
       Selectable: false
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.00999999978
       Style: Points
       Topic: /cloud
       Unreliable: false
@@ -355,7 +360,7 @@ Visualization Manager:
       Queue Size: 1
       Selectable: false
       Size (Pixels): 5
-      Size (m): 0.009999999776482582
+      Size (m): 0.00999999978
       Style: Points
       Topic: /filtered_cloud
       Unreliable: false
@@ -385,14 +390,14 @@ Visualization Manager:
       Queue Size: 1
       Selectable: false
       Size (Pixels): 5
-      Size (m): 0.009999999776482582
+      Size (m): 0.00999999978
       Style: Points
       Topic: /registered_cloud
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 0.800000011920929
+    - Alpha: 0.800000012
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: true
@@ -402,7 +407,7 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
-    - Alpha: 0.800000011920929
+    - Alpha: 0.800000012
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -412,6 +417,51 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_back_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_front_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cliff_sensor_front_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cliff_sensor_left_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cliff_sensor_right_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        gyro_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wheel_left_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wheel_right_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -433,22 +483,22 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: true
       Max Color: 0; 0; 0
-      Max Intensity: 0.20000000298023224
+      Max Intensity: 0.200000003
       Min Color: 255; 255; 255
-      Min Intensity: 0.20000000298023224
+      Min Intensity: 0.200000003
       Name: Point Map
       Position Transformer: XYZ
       Queue Size: 2
       Selectable: false
       Size (Pixels): 5
-      Size (m): 0.009999999776482582
+      Size (m): 0.00999999978
       Style: Points
       Topic: /point_map
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: false
       Value: true
-    - Alpha: 0.699999988079071
+    - Alpha: 0.699999988
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: true
@@ -457,6 +507,22 @@ Visualization Manager:
       Topic: /occupancy
       Unreliable: false
       Use Timestamp: true
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: frontier
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: path
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -473,10 +539,7 @@ Visualization Manager:
     - Class: rviz/FocusCamera
     - Class: rviz/Measure
     - Class: rviz/SetInitialPose
-      Theta std deviation: 0.2617993950843811
       Topic: /initialpose
-      X std deviation: 0.5
-      Y std deviation: 0.5
     - Class: rviz/SetGoal
       Topic: /move_base_simple/goal
     - Class: rviz/PublishPoint
@@ -485,41 +548,46 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -0.005000007338821888
-      Class: rviz/TopDownOrtho
+      Class: rviz/ThirdPersonFollower
+      Distance: 4.55523014
       Enable Stereo Rendering:
-        Stereo Eye Separation: 0.05999999865889549
+        Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: false
+      Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
-      Near Clip Distance: 0.009999999776482582
-      Scale: 108.09175109863281
+      Near Clip Distance: 0.00999999978
+      Pitch: 1.15539777
       Target Frame: <Fixed Frame>
-      Value: TopDownOrtho (rviz)
-      X: 1.5667964220046997
-      Y: -1.4081001281738281
+      Value: ThirdPersonFollower (rviz)
+      Yaw: 0.707218111
     Saved:
       - Angle: 0
         Class: rviz/TopDownOrtho
         Enable Stereo Rendering:
-          Stereo Eye Separation: 0.05999999865889549
+          Stereo Eye Separation: 0.0599999987
           Stereo Focal Distance: 1
           Swap Stereo Eyes: false
           Value: false
         Invert Z Axis: false
         Name: TopDownOrtho
-        Near Clip Distance: 0.009999999776482582
-        Scale: 76.89966583251953
+        Near Clip Distance: 0.00999999978
+        Scale: 76.8996658
         Target Frame: <Fixed Frame>
         Value: TopDownOrtho (rviz)
-        X: 2.407661199569702
-        Y: -0.6567058563232422
+        X: 2.4076612
+        Y: -0.656705856
       - Class: rviz/ThirdPersonFollower
         Distance: 10
         Enable Stereo Rendering:
-          Stereo Eye Separation: 0.05999999865889549
+          Stereo Eye Separation: 0.0599999987
           Stereo Focal Distance: 1
           Swap Stereo Eyes: false
           Value: false
@@ -528,14 +596,14 @@ Visualization Manager:
           Y: 0
           Z: 0
         Focal Shape Fixed Size: false
-        Focal Shape Size: 0.05000000074505806
+        Focal Shape Size: 0.0500000007
         Invert Z Axis: false
         Name: ThirdPersonFollower
-        Near Clip Distance: 0.009999999776482582
-        Pitch: 0.7853981852531433
+        Near Clip Distance: 0.00999999978
+        Pitch: 0.785398185
         Target Frame: base_link
         Value: ThirdPersonFollower (rviz)
-        Yaw: 3.141590118408203
+        Yaw: 3.14159012
 Window Geometry:
   Camera (Depth):
     collapsed: false
@@ -546,7 +614,7 @@ Window Geometry:
   Height: 1016
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000016b00000358fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000358000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000001ed00000358fc0200000006fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000020d000000a400fffffffb0000001800430061006d0065007200610020002800520047004200290100000250000001450000001600fffffffb0000001c00430061006d0065007200610020002800440065007000740068002900000002a6000001920000001600fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000fb0000000a0049006d00610067006501000004220000001600000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000074d00000040fc0100000002fb0000000800540069006d006501000000000000074d000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000003e90000035800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000016b0000036cfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006100fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000280000036c000000d700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000001ed0000036cfc0200000006fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000002800000219000000ad00fffffffb0000001800430061006d00650072006100200028005200470042002901000002470000014d0000001600fffffffb0000001c00430061006d0065007200610020002800440065007000740068002900000002a6000001920000001600fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000fb0000000a0049006d00610067006501000004220000001600000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073f00000040fc0100000002fb0000000800540069006d006501000000000000073f0000030000fffffffb0000000800540069006d00650100000000000004500000000000000000000003db0000036c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -555,6 +623,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1869
-  X: 51
+  Width: 1855
+  X: 65
   Y: 27

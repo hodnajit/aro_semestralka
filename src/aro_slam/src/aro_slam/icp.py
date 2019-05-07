@@ -3,18 +3,11 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 from math import sqrt
 from scipy.spatial import cKDTree
-from sklearn.neighbors import NearestNeighbors
 import cv2
 import math
 def func(x, a, b):
     return a + b*b*x  # Term b*b will create bimodality.
 
-
-def nearest_neighbor(src, dst):
-    neigh = NearestNeighbors(n_neighbors=1)
-    neigh.fit(dst)
-    distances, indices = neigh.kneighbors(src, return_distance=True)
-    return distances.ravel(), indices.ravel()
 
 def icp(x, y, num_iters=10, inlier_ratio=1.0, inlier_dist_mult=1.0, tol=1e-3, y_index=None, R=None, t=None):
     """Iterative closest point algorithm, minimizing sum of squares of point to point distances.
