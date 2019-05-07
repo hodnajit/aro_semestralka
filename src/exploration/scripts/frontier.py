@@ -88,6 +88,7 @@ class FrontierExplorer():
         self.image = im2
         plt.imshow(im2)
         plt.show()"""
+        
         im=[]
         for x in tmpGrid:
             if x==-1:
@@ -100,15 +101,21 @@ class FrontierExplorer():
             im.append(x)
         im2=np.array(im)
         #im2=np.array([50 if x==-1 else x for x in tmpGrid])
-        for a in frontiers:
-            im2[(a[1])*self.gridInfo.width + a[0]] = 75
-
-        print("reshaping image")
         try:
+            print("kresli frontiery")
+            for a in frontiers:
+                im2[(a[1])*self.gridInfo.width + a[0]] = 75
+
+            print("reshaping image")
+
             im2 = im2.reshape(hi,wi)
         except:
             print("obrazek v pici")
         self.image = im2
+
+        plt.imshow(im2)
+        strIm = "default.png"
+        plt.savefig(strIm)
 
         return frontiers
 
@@ -133,19 +140,24 @@ class FrontierExplorer():
         frontier = frontiers[frontierInd]
         print("Random="+str(frontier))
 
-        #self.image[frontier[1],frontier[0]] = 25
-        #plt.imshow(self.image)
+        print("making image")
+        self.image[frontier[1],frontier[0]] = 25
+        plt.imshow(self.image)
         #plt.show()
+        strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
+        plt.savefig(strIm)
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute center of the randomly drawn frontier here
         x, y = utils.gridToMapCoordinates(frontier, self.gridInfo)  # TODO: transform the coordinates from grid to real-world coordinates (in meters)
         response = GenerateFrontierResponse(Pose2D(x, y, 0.0))
+        print("koncim")
         return response
 
     def getClosestFrontier(self, request):
         """ Return frontier closest to the robot """
         # TODO
         frontiers = self.computeWFD()
+        print("find closest")
         bestFrontierIdx = utils.findClosestFrontier(self.robotPosition,frontiers)  # TODO: compute the index of the best frontier
         frontier = frontiers[bestFrontierIdx]
         print("Best="+str(frontier))
