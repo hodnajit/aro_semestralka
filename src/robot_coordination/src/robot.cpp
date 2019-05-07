@@ -26,7 +26,7 @@ void Robot::startExecutePath() {
 }
 
 void Robot::stopExecutePath() {
-  geometry_msgs::Twist command;
+  geometry_msgs::Twist command; 
   command.angular.z = 0;
   command.linear.x = 0;
   command_publisher_->publish(command);
@@ -120,7 +120,7 @@ bool Robot::followTheCarrot() {
 
     ROS_INFO("time to goal %f ", time_to_goal);
     double speed;
-    double speed_limit = 0.1;
+    double speed_limit = 0.2;
     if (time_to_goal > 0) {
       speed = dist/time_to_goal;
       if(speed>speed_limit)
