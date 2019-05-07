@@ -91,10 +91,10 @@ class PathPlanner():
     def getRobotCoordinates(self):
         """ Get the current robot position in the grid """
         try:
-            print("try")
+            #print("try")
             trans = self.tfBuffer.lookup_transform("map", "base_link", rospy.Time(), rospy.Duration(0.5))
-            print("TRANSFORMATIONS MAP->ROBOT")
-            print(trans)
+            #print("TRANSFORMATIONS MAP->ROBOT")
+            #print(trans)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rospy.logwarn("Cannot get the robot position!")
             self.robotPosition = None
