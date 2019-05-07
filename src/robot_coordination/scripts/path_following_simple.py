@@ -131,7 +131,7 @@ class PathFollowing:
             waypoint_list.append(waypoint)
         """
         tmpData = data.poses#[::2]
-        #tmpData = tmpData[2:len(tmpData)-3]
+        tmpData = tmpData[2:len(tmpData)-5]
         transforming = True
         try:
             trans = self.tfBuffer.lookup_transform("odom", "map", rospy.Time(), rospy.Duration(0.5))
