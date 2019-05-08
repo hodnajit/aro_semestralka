@@ -96,7 +96,13 @@ pdfpagemode=UseNone,backref=false,colorlinks=true] {hyperref}
 \section{Zadání}
 Cílem semestrální práce je lokalizace panenky Barbie v neznámém prostředí s využitím robotu TurtleBot s RPLidarem a kamerou.
 \section{Řešení}
-
+	Robot využívá několik balíčků
+	\begin{itemize}
+		\item SLAM (s využitím gridu, voxel map, transforms3d) s ICP s odometrií,
+		\item Robot coordination - pohyb robota a sledování naplánované cesty pomocí Carrot,
+		\item exploration - hledání frontiers a naplánování cesty k nim,
+		\item a barbie detection - naučená neronová síť na detekci panenky Barbie.
+	\end{itemize}
 \section{Originální nápady, které vylepší chování robota}
 \subsection{Výběr vhodné cesty a jízda}
 	% jak vybíráme cíl cesty a jak jedeme (průběžné vybírání cílů, hledání nových frontiers..., otáčení pokud nemáme frontiera)
