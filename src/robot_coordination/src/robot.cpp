@@ -4,6 +4,7 @@
 #include "tf/tf.h"
 #include "robot/robot.h"
 
+
 /* threshold - robot waypoint tolerance in meters */
 Robot::Robot() :
   thresholdT_(0.1),thresholdR_(0.1), go_backwards_(false) {
@@ -22,7 +23,7 @@ void Robot::odometryCallback (const nav_msgs::Odometry::ConstPtr& msg) {
     geometry_msgs::Twist command;
     command.angular.z = 0.7;
     command.linear.x = 0;
-    command_publisher_->publish(command);
+    //command_publisher_->publish(command);
   }
 }
 
@@ -86,7 +87,7 @@ void Robot::setStatePublisher(ros::Publisher * statepub) {
 bool Robot::followTheCarrot() {
   if (plan_.empty()) {
     geometry_msgs::Twist command;
-    command.angular.z = 0.7;
+    command.angular.z = 0;
     command.linear.x = 0;
     command_publisher_->publish(command);
     return true;

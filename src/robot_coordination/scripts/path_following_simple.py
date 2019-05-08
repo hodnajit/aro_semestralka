@@ -4,7 +4,7 @@
 import time
 import geometry_msgs.msg
 from geometry_msgs.msg import Pose
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import PointStamped, Twist
 from std_msgs.msg import Int32, Bool
 from robot_coordination.msg import Waypoint
 from robot_coordination.srv import AddPath
@@ -16,6 +16,8 @@ from sensor_msgs.msg import LaserScan
 from laser_geometry.laser_geometry import LaserProjection
 import tf2_ros
 import tf2_geometry_msgs
+import math
+import time
 
 
 class PathFollowing:
@@ -28,6 +30,7 @@ class PathFollowing:
         self.waypoints_ahead = 0
         self.waypoints_ahead_updated = False
         self.tfBuffer = tf2_ros.Buffer()
+        self.cmdPub = rospy.Publisher('/cmd_vel_mux/safety_controller',Twist, queue_size=10)
         # Use the tfBuffer to obtain transformation as needed
         tfListener = tf2_ros.TransformListener(self.tfBuffer)
 
@@ -35,9 +38,11 @@ class PathFollowing:
         self.waypoints_ahead = msg.data
         self.waypoints_ahead_updated = True
 
+    
+
     def callback_path(self, msg):
-        self.stop_movement()
-        waypoint_list = self.create_trajectory(msg)
+        waypoint_list = self.create_trajectory(msg)        
+
         if not self.add_path(waypoint_list):
             rospy.logerr('Could not add path, exiting')
         rospy.loginfo('Path added')
@@ -158,7 +163,7 @@ def main():
 
     pf = PathFollowing()
     rate = rospy.Rate(10)
-
+   
 
     while not rospy.is_shutdown():
 
