@@ -45,7 +45,7 @@ def barbie_cb(msg):
         pose_transformed = tf2_geometry_msgs.do_transform_point(msg, trans)
     else:
         pose_transformed = msg
-    if pose_transformed.point.z < 0.35:
+    if pose_transformed.point.z > 0.3:
         detections.remove(msg)
         print("Jsme vysoko")
         return 

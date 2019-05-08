@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
 import rospy
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import morphology
 from nav_msgs.msg import OccupancyGrid, MapMetaData
