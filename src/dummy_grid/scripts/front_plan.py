@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
             posx = response.goal_pose.x
             posy = response.goal_pose.y
-        else: #if barbieDetected:
+        if barbieDetected:
             posx = barbiex
             posy = barbiey
             print("planning to barbie")

@@ -36,7 +36,7 @@ class PathFollowing:
         self.waypoints_ahead_updated = True
 
     def callback_path(self, msg):
-        #self.stop_movement();
+        self.stop_movement()
         waypoint_list = self.create_trajectory(msg)
         if not self.add_path(waypoint_list):
             rospy.logerr('Could not add path, exiting')
