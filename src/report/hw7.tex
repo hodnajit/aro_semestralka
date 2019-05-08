@@ -5,7 +5,7 @@
 %
 \documentclass[twoside]{article}
 \usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=2.5cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -83,30 +83,44 @@ pdfpagemode=UseNone,backref=false,colorlinks=true] {hyperref}
 % enumerate zacina s pismenem
 \renewcommand{\theenumi}{\alph{enumi}}
 
-% smaz aktualni page layout
-\fancyhf{}
-% zahlavi
-\usepackage{titling}
-\fancyhf[HC]{\thetitle}
-\fancyhf[HLE,HRO]{\theauthor}
-\fancyhf[HRE,HLO]{\today}
- %zapati
-\fancyhf[FLE,FRO]{\thepage}
-
-% údaje o autorovi
-\title{B3M33ARO\\ Semestrální práce\\ 2D Barbie lokalizace}
-\author{Halodová L., Hodná J., Rouček T.}
-\date{\today}
-
 \begin{document}
 
+% ========== Edit your name here
+\author{Halodová L., Hodná J., Rouček T.}
+\title{Semestrální práce B3M33ARO: 2D Barbie lokalizace}
 \maketitle
 
 % ---------------------------------
 % ---------------------------------
 % název sekce je generován automaticky jako: Úkol X
-\section*{Individuální zadání}
-\renewcommand{\thesection}{Úkol \arabic{section}}
+\section{Zadání}
+Cílem semestrální práce je lokalizace panenky Barbie v neznámém prostředí s využitím robotu TurtleBot s RPLidarem a kamerou.
+\section{Řešení}
+
+\section{Originální nápady, které vylepší chování robota}
+\subsection{Výběr vhodné cesty a jízda}
+	% jak vybíráme cíl cesty a jak jedeme (průběžné vybírání cílů, hledání nových frontiers..., otáčení pokud nemáme frontiera)
+\subsection{Filtr naplánované cesty}
+	% Vybíráme 4. od začátku a nedojíždíme až na konec (-3)
+\subsection{Výběr vhodných parametrů pro front-plan}
+	Selekce vhodných parametrů pro nafukování detekovaných překážek v mapě...\\
+	Jak můžete vidět v obrázku \ref{fig:front_plan}.
+	\begin{figure}[!h]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{img/test.png}
+         \caption{Test pic}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{img/test.png}
+         \caption{Test pic)}
+         
+     \end{subfigure}
+        \caption{Test caption}
+        \label{fig:front_plan}
+	\end{figure}
 
 
 
