@@ -340,6 +340,9 @@ def AstarSearch(start, goal, grid, rows, cols):
 
     print("END")
     #print(goal)
+    if goalInd >= len(grid):
+        print("asi ti nic nenaplanuju, cil je mimo mapu")
+        return []
     if grid[goalInd]==False:
         print("CANNOT PLAN TO OBSTACLE!")
     else:
@@ -359,6 +362,8 @@ def getPath(goal,cols):
         path.insert(0,val)
         parent = parent.parent
         if parent is None:
+            if not (len(path)>0):
+                print("Planer vraci prazdnou cestu")
             return path
 
 def euclidianDistance(start,goal,cols):

@@ -3,15 +3,31 @@ from __future__ import absolute_import, division, print_function
 import rospy
 from geometry_msgs.msg import Pose2D, Pose, Point, Vector3, PoseStamped
 from nav_msgs.msg import Path
-from std_msgs.msg import Header, ColorRGBA
+from std_msgs.msg import Header, ColorRGBA, Int32
 from visualization_msgs.msg import Marker, MarkerArray
 from exploration.srv import AnyFrontiersLeft, AnyFrontiersLeftRequest, AnyFrontiersLeftResponse, GenerateFrontier, GenerateFrontierResponse
 from exploration.srv import PlanPath,  PlanPathRequest, PlanPathResponse
 import numpy as np
 
+sentPath = 0
+newPath = False
+
+def path_cb(msg):
+    global newPath
+    newPath = False
+    rcvPath = msg.data # pocet kolik waypoints zbyva do konce
+    traveledPath = sentPath - rcvPath
+    change = sentPath/2
+    if traveledPath > change:
+        newPath = True
+        #print("Preplanovavam "+str(traveledPath)+">"+str(change))
+
+
 if __name__ == "__main__":
     rospy.init_node("frontier_planner")
     print("start")
+
+    pathSubscriber = rospy.Subscriber('waypoints_ahead', Int32, path_cb)
 
     cmd = rospy.get_param("~cmd", "random")
     frontierMarker = rospy.Publisher("frontier", Marker, queue_size=10)
@@ -49,8 +65,11 @@ if __name__ == "__main__":
         response = pathPlanner.call(request)
         rospy.loginfo(response)
 
+        global sentPath
+        sentPath = len(response.path)
+
         rospy.sleep(0.5)
-        msg = MarkerArray([Marker(header=header, pose=Pose(position=Point(p.x, p.y, 0)), id=np.random.randint(0, 1000), type=1, scale=Vector3(0.1, 0.1, 0.1), color=ColorRGBA(0.5, 0.5, 1, 1)) for p in response.path])
+        msg = MarkerArray([Marker(header=header, pose=Pose(position=Point(p.x, p.y, 0)), id=np.random.randint(0, 1000), type=1, scale=Vector3(0.05, 0.05, 0.05), color=ColorRGBA(0.5, 0.5, 1, 0.8)) for p in response.path])
         pathMarkers.publish(msg)
 
         path_points = Path()
@@ -68,5 +87,8 @@ if __name__ == "__main__":
         path_points.poses = poses
         path_pub.publish(path_points)
         print("cekam az dojede pohyb")
-        rospy.sleep(3)
+        #rospy.sleep(3)
+        while not newPath and not rospy.is_shutdown():
+            pass
+
         print("pracuju")

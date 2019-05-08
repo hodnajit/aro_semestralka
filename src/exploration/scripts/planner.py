@@ -57,7 +57,17 @@ class PathPlanner():
         #print(tmpGrid)
         print("shape="+str(tmpGrid.shape))
 
-        inflated_grid = morphology.grey_dilation(tmpGrid,size=(8,8))
+        ######### kod pro zpiceny tycky na robotu co vidi lidar - turtle02 ########
+        rob = self.robotPosition
+        indexes = range(-4,5) # od -3 po 3
+        for i in indexes:
+            for j in indexes:
+                if ((rob[1]+i)>self.gridInfo.height) or ((rob[0]+j)>self.gridInfo.width):
+                    print("mazu mimo pole")
+                    continue
+                tmpGrid[rob[1]+i][rob[0]+j]=0
+
+        inflated_grid = morphology.grey_dilation(tmpGrid,size=(9,9))
 
         print("INFLATED")
         #print(inflated_grid)

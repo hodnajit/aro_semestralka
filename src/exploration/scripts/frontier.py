@@ -52,6 +52,18 @@ class FrontierExplorer():
         threshold = 50
         tmpGrid = np.array(self.grid) # -1 = unseen, 0 = empty (i.e True = empty), 1..100 = full (i.e False = full)
         tmpGrid=np.reshape(tmpGrid,(self.gridInfo.height,self.gridInfo.width))
+
+        ######### kod pro zpiceny tycky na robotu co vidi lidar - turtle02 ########
+        rob = self.robotPosition
+        indexes = range(-4,5) # od -3 po 3
+        for i in indexes:
+            for j in indexes:
+                if ((rob[1]+i)>self.gridInfo.height) or ((rob[0]+j)>self.gridInfo.width):
+                    print("mazu mimo pole")
+                    continue
+                tmpGrid[rob[1]+i][rob[0]+j]=0
+
+
         inflated_grid = morphology.grey_dilation(tmpGrid,size=(9,9))
         tmpGrid = np.reshape(inflated_grid,self.gridInfo.height*self.gridInfo.width)
         #tmpGrid = tmpGrid <= threshold
@@ -90,6 +102,7 @@ class FrontierExplorer():
         plt.show()"""
 
         im=[]
+        print("tmpGrid:"+str(len(tmpGrid)))
         for x in tmpGrid:
             if x==-1:
                 x=50
@@ -101,26 +114,39 @@ class FrontierExplorer():
             im.append(x)
         im2=np.array(im)
         #im2=np.array([50 if x==-1 else x for x in tmpGrid])
-        """try:
-            print("kresli frontiery")
-            for a in frontiers:
-                if ((a[1])*wi + a[0]) > len(im2):
-                    print("bullshit")
-                    continue
-                im2[(a[1])*wi + a[0]] = 75
+        self.image=[]
+        if True:
+            try:
+                print("kresli frontiery")
+                for a in frontiers:
+                    if ((a[1])*wi + a[0]) >= len(im2):
+                        print("bullshit")
+                        continue
+                    im2[(a[1])*wi + a[0]] = 75
 
-            print("reshaping image")
-            if (hi*wi) > len(im2):
-                print("ani hovno")
-                return frontiers
-            #im2 = np.reshape(im2,(hi,wi))
-        except:
-            print("obrazek v pici")
-        self.image = im2
+                print("im2:"+str(len(im2)))
+                print("reshaping image")
+                print("wi:"+str(wi)+" hi:"+str(hi))
+                if (hi*wi) > len(im2):
+                    print("ani hovno")
+                    return frontiers
+                im2 = np.reshape(im2,(hi,wi))
+                print("after reshape")
+                im2[rob[1]][rob[0]]=90
+                print("after rob")
+            except:
+                print("obrazek v pici")
+            print("prirazeni")
+            self.image = im2
 
-        plt.imshow(im2)
-        strIm = "default.png"
-        plt.savefig(strIm)"""
+            print("uloz image")
+            plt.imshow(im2)
+            print("after imshow")
+            strIm = "default.png"
+            plt.savefig(strIm)
+            print("after save")
+
+        print("vraci frontiery")
 
         return frontiers
 
@@ -148,16 +174,17 @@ class FrontierExplorer():
         frontier = frontiers[frontierInd]
         print("Random="+str(frontier))
 
-        """print("making image")
-        wi=self.gridInfo.width
-        #self.image[frontier[1],frontier[0]] = 25
-        if not (((frontier[1])*wi + frontier[0])> len(self.image)):
-            print("nebudu to delat")
-            self.image[(frontier[1])*wi + frontier[0]] =25
-            plt.imshow(self.image)
-            #plt.show()
-            strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
-            plt.savefig(strIm)"""
+        if False:
+            print("making image")
+            wi=self.gridInfo.width
+            if not (((frontier[1])*wi + frontier[0])>= len(self.image)):
+                print("nebudu to delat")
+                self.image[frontier[1],frontier[0]] = 25
+                #self.image[(frontier[1])*wi + frontier[0]] =25
+                plt.imshow(self.image)
+                #plt.show()
+                strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
+                plt.savefig(strIm)
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute center of the randomly drawn frontier here
         x, y = utils.gridToMapCoordinates(frontier, self.gridInfo)  # TODO: transform the coordinates from grid to real-world coordinates (in meters)
@@ -177,25 +204,26 @@ class FrontierExplorer():
         frontier = frontiers[bestFrontierIdx]
         print("Best="+str(frontier))
 
-        """print("making image")
-        #self.image[frontier[1],frontier[0]] = 25
-        wi=self.gridInfo.width
-        if not (((frontier[1])*wi + frontier[0])> len(self.image)):
-            print("nebudu to delat")
-            self.image[(frontier[1])*wi + frontier[0]] =25
-            plt.imshow(self.image)
-            strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
-            plt.savefig(strIm)"""
-            #plt.show()
-            """msg = Image()
-            msg.header.stamp = rospy.Time.now()
-            msg.data = self.image.tostring() #in_image.tostring()
-            msg.height = self.image.shape[0]
-            msg.width = self.image.shape[1]
-            msg.step = sys.getsizeof(self.image.shape[1])
-            msg.encoding = 'rgb8'
-            msg.is_bigendian = 0
-            self.image_pub.publish(msg)"""
+        if True:
+            print("making image")
+            wi=self.gridInfo.width
+            if not (((frontier[1])*wi + frontier[0])>= len(self.image)):
+                print("nebudu to delat")
+                self.image[frontier[1],frontier[0]] = 25
+                #self.image[(frontier[1])*wi + frontier[0]] =25
+                plt.imshow(self.image)
+                strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
+                plt.savefig(strIm)
+        #plt.show()
+        """msg = Image()
+        msg.header.stamp = rospy.Time.now()
+        msg.data = self.image.tostring() #in_image.tostring()
+        msg.height = self.image.shape[0]
+        msg.width = self.image.shape[1]
+        msg.step = sys.getsizeof(self.image.shape[1])
+        msg.encoding = 'rgb8'
+        msg.is_bigendian = 0
+        self.image_pub.publish(msg)"""
 
 
 
