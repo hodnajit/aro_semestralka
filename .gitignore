@@ -4,3 +4,8 @@ logs
 .catkin_tools
 *.pyc
 *.png
+*.aux
+*.log
+*.out
+*.synctex.gz
+
