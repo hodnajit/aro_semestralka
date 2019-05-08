@@ -11,6 +11,9 @@ import numpy as np
 
 sentPath = 0
 newPath = False
+barbiex = -1
+barbiey = -1
+barbieDetected = False
 
 def path_cb(msg):
     global newPath
@@ -22,12 +25,22 @@ def path_cb(msg):
         newPath = True
         #print("Preplanovavam "+str(traveledPath)+">"+str(change))
 
+def barbie_cb(msg):
+    global barbiex
+    barbiex = msg.x
+    global barbiey
+    barbiey = msg.y
+    global barbieDetected
+    barbieDetected = True
+    print("barbie at "+str(barbiex)+","+str(barbiey))
+
 
 if __name__ == "__main__":
     rospy.init_node("frontier_planner")
     print("start")
 
     pathSubscriber = rospy.Subscriber('waypoints_ahead', Int32, path_cb)
+    barbieSubscriber = rospy.Subscriber('barbie_position_final', Point, barbie_cb)
 
     cmd = rospy.get_param("~cmd", "random")
     frontierMarker = rospy.Publisher("frontier", Marker, queue_size=10)
@@ -46,22 +59,33 @@ if __name__ == "__main__":
         #response = caller.call()
         #any = response.any_frontiers_left
         #print(any)
-        if cmd.lower() == "random":
-            rospy.wait_for_service("get_random_frontier")
-            caller = rospy.ServiceProxy("get_random_frontier", GenerateFrontier)
+        if not barbieDetected:
+            print("searching frontiers")
+            if cmd.lower() == "random":
+                rospy.wait_for_service("get_random_frontier")
+                caller = rospy.ServiceProxy("get_random_frontier", GenerateFrontier)
 
-        elif cmd.lower() == "near":
-            rospy.wait_for_service("get_closest_frontier")
-            caller = rospy.ServiceProxy("get_closest_frontier", GenerateFrontier)
+            elif cmd.lower() == "near":
+                rospy.wait_for_service("get_closest_frontier")
+                caller = rospy.ServiceProxy("get_closest_frontier", GenerateFrontier)
 
-        response = caller.call()
-        rospy.sleep(0.5)
-        header = Header(stamp=rospy.Time.now(), frame_id="map")
-        msg = Marker(header=header, pose=Pose(position=Point(response.goal_pose.x, response.goal_pose.y, 0)), id=np.random.randint(0, 1e9), type=Marker.CUBE, scale=Vector3(0.1, 0.1, 0.1), color=ColorRGBA(0.5, 1, 0, 1), lifetime=rospy.Duration(0))
-        frontierMarker.publish(msg)
-        rospy.loginfo(response)
+            response = caller.call()
+            rospy.sleep(0.5)
+            header = Header(stamp=rospy.Time.now(), frame_id="map")
+            msg = Marker(header=header, pose=Pose(position=Point(response.goal_pose.x, response.goal_pose.y, 0)), id=np.random.randint(0, 1e9), type=Marker.CUBE, scale=Vector3(0.1, 0.1, 0.1), color=ColorRGBA(0.5, 1, 0, 1), lifetime=rospy.Duration(0))
+            frontierMarker.publish(msg)
+            rospy.loginfo(response)
 
-        request = PlanPathRequest(Pose2D(response.goal_pose.x, response.goal_pose.y, 0.0))
+            posx = response.goal_pose.x
+            posy = response.goal_pose.y
+        else: #if barbieDetected:
+            posx = barbiex
+            posy = barbiey
+            print("planning to barbie")
+            global barbieDetected
+            barbieDetected = False
+
+        request = PlanPathRequest(Pose2D(posx, posy, 0.0))
         response = pathPlanner.call(request)
         rospy.loginfo(response)
 

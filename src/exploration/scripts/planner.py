@@ -90,12 +90,56 @@ class PathPlanner():
         print("goal="+str(goalPosition))
         print("goalGrid="+str(goalPositionGrid))
         #path=[]
+        print("planning")
+        hi = self.gridInfo.height
+        wi = self.gridInfo.width
         path = utils.AstarSearch(self.robotPosition,goalPositionGrid, tmpGrid, rows, cols)
         ##print(path)
+
+        print("obrazek")
+        im=[]
+        for x in tmpGrid:
+            if x==-1:
+                x=50
+            else:
+                if x>threshold: # i.e. obstacle
+                    x=100
+                else:
+                    x=0
+            im.append(x)
+        im2=np.array(im)
+        self.image=[]
+        if True:
+            try:
+                print("kresli path")
+                for a in path:
+                    if ((a[1])*wi + a[0]) > len(im2):
+                        print("bullshit")
+                        continue
+                    im2[(a[1])*wi + a[0]] = 75
+
+                if (hi*wi) > len(im2):
+                    print("ani hovno")
+                    return frontiers
+                im2 = np.reshape(im2,(hi,wi))
+                im2[rob[1]][rob[0]]=90
+            except:
+                print("obrazek v pici")
+            self.image = im2
+
+            print("uloz image")
+            plt.imshow(im2)
+            print("after imshow")
+            strIm = "aplanner.png"
+            plt.savefig(strIm)
+            print("after save")
+
+
 
         """ transform each point into real-world coordinates """
         real_path = [Pose2D(pos[0], pos[1], 0) for pos in [utils.gridToMapCoordinates(waypoint, self.gridInfo) for waypoint in path]]
         response = PlanPathResponse(real_path)
+        print("vraci path")
         return response
 
     def getRobotCoordinates(self):
