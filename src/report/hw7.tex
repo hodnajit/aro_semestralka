@@ -1,0 +1,128 @@
+%
+% Author:  Jan Zabojnik
+% E-mail:  jan.zabojnik@fel.cvut.cz
+% Date:    03.02.2014 14:57
+%
+\documentclass[twoside]{article}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% nastavení pisma a češtiny
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc} %cp1250
+\usepackage[czech]{babel}	
+
+% odkazy
+\usepackage{url}
+
+% vícesloupcové tabulky
+\usepackage{multirow}
+
+%matika
+\usepackage{mathtools}
+
+%kody
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+%zarovnani rovnic
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+%seznamy
+\usepackage{enumerate}
+
+%tabulky
+\usepackage{booktabs}
+
+%stupne
+\usepackage{textcomp}
+\usepackage{gensymb}
+
+% vnořené popisky obrázků
+\usepackage{subcaption}
+
+% automatická konverze EPS 
+\usepackage{graphicx} 
+\usepackage{epstopdf}
+
+% odkazy a záložky
+\usepackage[unicode=true, bookmarks=true,bookmarksnumbered=true,
+bookmarksopen=false, breaklinks=false,pdfborder={0 0 0},
+pdfpagemode=UseNone,backref=false,colorlinks=true] {hyperref}
+
+% Poznámky při překladu
+\usepackage{xkeyval}	% Inline todonotes
+\usepackage[textsize = footnotesize]{todonotes}
+\presetkeys{todonotes}{inline}{}
+
+% Zacni sekci slovem ukol
+%\renewcommand{\thesection}{Úkol \arabic{section}}
+% enumerate zacina s pismenem
+\renewcommand{\theenumi}{\alph{enumi}}
+
+\begin{document}
+
+% ========== Edit your name here
+\author{Halodová L., Hodná J., Rouček T.}
+\title{Semestrální práce B3M33ARO: 2D Barbie lokalizace}
+\maketitle
+
+% ---------------------------------
+% ---------------------------------
+% název sekce je generován automaticky jako: Úkol X
+\section{Zadání}
+Cílem semestrální práce je lokalizace panenky Barbie v neznámém prostředí s využitím robotu TurtleBot s RPLidarem a kamerou.
+\section{Řešení}
+
+\section{Originální nápady, které vylepší chování robota}
+\subsection{Výběr vhodné cesty a jízda}
+	% jak vybíráme cíl cesty a jak jedeme (průběžné vybírání cílů, hledání nových frontiers..., otáčení pokud nemáme frontiera)
+\subsection{Filtr naplánované cesty}
+	% Vybíráme 4. od začátku a nedojíždíme až na konec (-3)
+\subsection{Výběr vhodných parametrů pro front-plan}
+	Selekce vhodných parametrů pro nafukování detekovaných překážek v mapě...\\
+	Jak můžete vidět v obrázku \ref{fig:front_plan}.
+	\begin{figure}[!h]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{img/test.png}
+         \caption{Test pic}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{img/test.png}
+         \caption{Test pic)}
+         
+     \end{subfigure}
+        \caption{Test caption}
+        \label{fig:front_plan}
+	\end{figure}
+
+
+
+\end{document}
+
