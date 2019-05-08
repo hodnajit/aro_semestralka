@@ -183,7 +183,7 @@ class FrontierExplorer():
                 #self.image[(frontier[1])*wi + frontier[0]] =25
                 plt.imshow(self.image)
                 #plt.show()
-                strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
+                strIm = str(frontier[1])+"I"+str(frontier[0])+"fronti.png"
                 plt.savefig(strIm)
 
         frontierCenter = (frontier[0]+frontier[1])/2  # TODO: compute center of the randomly drawn frontier here
@@ -212,7 +212,7 @@ class FrontierExplorer():
                 self.image[frontier[1],frontier[0]] = 25
                 #self.image[(frontier[1])*wi + frontier[0]] =25
                 plt.imshow(self.image)
-                strIm = "fronti"+str(frontier[1])+"I"+str(frontier[0])+".png"
+                strIm = str(frontier[1])+"I"+str(frontier[0])+"fronti.png"
                 plt.savefig(strIm)
         #plt.show()
         """msg = Image()

@@ -78,6 +78,23 @@ class PathPlanner():
         #print("<>="+str(tmpGrid <= 0))
         tmpGrid = np.reshape(inflated_grid,self.gridInfo.height*self.gridInfo.width)
         print("shape="+str(tmpGrid.shape))
+
+
+        print("obrazek")
+        im=[]
+        for x in tmpGrid:
+            if x==-1:
+                x=50
+            else:
+                if x>threshold: # i.e. obstacle
+                    x=100
+                else:
+                    x=0
+            im.append(x)
+        im2=np.array(im)
+        self.image=[]
+
+
         tmpGrid = tmpGrid <= threshold
         #print("GRID=\n"+str(tmpGrid))
 
@@ -97,19 +114,7 @@ class PathPlanner():
         path = utils.AstarSearch(self.robotPosition,goalPositionGrid, tmpGrid, rows, cols)
         ##print(path)
 
-        print("obrazek")
-        im=[]
-        for x in tmpGrid:
-            if x==-1:
-                x=50
-            else:
-                if x>threshold: # i.e. obstacle
-                    x=100
-                else:
-                    x=0
-            im.append(x)
-        im2=np.array(im)
-        self.image=[]
+
         if True:
             try:
                 print("kresli path")
@@ -119,6 +124,7 @@ class PathPlanner():
                         continue
                     im2[(a[1])*wi + a[0]] = 75
 
+                im2[(a[1])*wi + a[0]] = 25
                 if (hi*wi) > len(im2):
                     print("ani hovno")
                     return frontiers
@@ -131,7 +137,8 @@ class PathPlanner():
             print("uloz image")
             plt.imshow(im2)
             print("after imshow")
-            strIm = "aplanner.png"
+            strIm = str(a[1])+"I"+str(a[0])+"plan.png"
+            #strIm = "aplanner.png"
             plt.savefig(strIm)
             print("after save")
 
