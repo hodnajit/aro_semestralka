@@ -6,7 +6,7 @@
 
 /* threshold - robot waypoint tolerance in meters */
 Robot::Robot() :
-  thresholdT_(0.2),thresholdR_(0.1), go_backwards_(false) {
+  thresholdT_(0.15),thresholdR_(0.1), go_backwards_(false) {
 }
 
 void Robot::odometryCallback (const nav_msgs::Odometry::ConstPtr& msg) {

@@ -142,7 +142,7 @@ class FrontierExplorer():
             print("uloz image")
             plt.imshow(im2)
             print("after imshow")
-            strIm = "default.png"
+            strIm = "xend.png"
             plt.savefig(strIm)
             print("after save")
 
@@ -174,10 +174,10 @@ class FrontierExplorer():
         frontier = frontiers[frontierInd]
         print("Random="+str(frontier))
 
-        if False:
+        if True:
             print("making image")
             wi=self.gridInfo.width
-            if not (((frontier[1])*wi + frontier[0])>= len(self.image)):
+            if True :#not (((frontier[1])*wi + frontier[0])>= len(self.image)):
                 print("nebudu to delat")
                 self.image[frontier[1],frontier[0]] = 25
                 #self.image[(frontier[1])*wi + frontier[0]] =25
@@ -207,7 +207,7 @@ class FrontierExplorer():
         if True:
             print("making image")
             wi=self.gridInfo.width
-            if not (((frontier[1])*wi + frontier[0])>= len(self.image)):
+            if True: #not (((frontier[1])*wi + frontier[0])>= len(self.image)):
                 print("nebudu to delat")
                 self.image[frontier[1],frontier[0]] = 25
                 #self.image[(frontier[1])*wi + frontier[0]] =25

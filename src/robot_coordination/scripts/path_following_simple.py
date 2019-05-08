@@ -36,7 +36,7 @@ class PathFollowing:
         self.waypoints_ahead_updated = True
 
     def callback_path(self, msg):
-        self.stop_movement();
+        #self.stop_movement();
         waypoint_list = self.create_trajectory(msg)
         if not self.add_path(waypoint_list):
             rospy.logerr('Could not add path, exiting')
@@ -131,7 +131,7 @@ class PathFollowing:
             waypoint_list.append(waypoint)
         """
         tmpData = data.poses#[::2]
-        tmpData = tmpData[2:len(tmpData)-5]
+        tmpData = tmpData[3:len(tmpData)-5]
         transforming = True
         try:
             trans = self.tfBuffer.lookup_transform("odom", "map", rospy.Time(), rospy.Duration(0.5))
