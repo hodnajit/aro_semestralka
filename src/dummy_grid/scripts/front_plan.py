@@ -94,7 +94,7 @@ def rotate360():
     vel_msg.angular.z = 1.5
     for x in xrange(1,10):
         cmdPub.publish(vel_msg)
-        time.sleep(1.5)
+        time.sleep(2)
     vel_msg.angular.z = 0
     print("mocime")
     cmdPub.publish(vel_msg)
@@ -119,7 +119,8 @@ if __name__ == "__main__":
     print("frontier planning started")
     any = True
     while any and not rospy.is_shutdown():
-        rotate360()
+
+        
         #rospy.wait_for_service("any_frontiers_left")
         #caller = rospy.ServiceProxy("any_frontiers_left", AnyFrontiersLeft)
         #rospy.loginfo(caller.call())
@@ -128,6 +129,7 @@ if __name__ == "__main__":
         #any = response.any_frontiers_left
         #print(any)
         if not barbieDetected:
+            rotate360()
             print("searching frontiers")
             if cmd.lower() == "random":
                 rospy.wait_for_service("get_random_frontier")
@@ -165,7 +167,7 @@ if __name__ == "__main__":
         global rcvPath
         rcvPath = sentPath
 
-
+        header = Header(stamp=rospy.Time.now(), frame_id="map")
         msg = MarkerArray([Marker(header=header, pose=Pose(position=Point(p.x, p.y, 0)), id=np.random.randint(0, 1000), type=1, scale=Vector3(0.05, 0.05, 0.05), color=ColorRGBA(0.5, 0.5, 1, 0.8)) for p in response.path])
         pathMarkers.publish(msg)
 
