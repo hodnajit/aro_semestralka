@@ -41,6 +41,7 @@ def barbie_cb(msg):
     global barbieDetected
     barbieDetected = True
     print("barbie at "+str(barbiex)+","+str(barbiey))
+    newPath = True
 
 def wait_for_service( srv_name):
     """Wait for a service called srv_name."""
@@ -117,6 +118,7 @@ if __name__ == "__main__":
     print("frontier planning started")
     any = True
     while any and not rospy.is_shutdown():
+        rotate360()
         #rospy.wait_for_service("any_frontiers_left")
         #caller = rospy.ServiceProxy("any_frontiers_left", AnyFrontiersLeft)
         #rospy.loginfo(caller.call())
@@ -187,5 +189,5 @@ if __name__ == "__main__":
             rospy.sleep(0.1)
 
 
-        rotate360()
+
         print("pracuju")
