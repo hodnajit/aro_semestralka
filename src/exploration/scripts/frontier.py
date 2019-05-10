@@ -178,7 +178,7 @@ class FrontierExplorer():
             print("making image")
             wi=self.gridInfo.width
             if True :#not (((frontier[1])*wi + frontier[0])>= len(self.image)):
-                print("nebudu to delat")
+                #print("nebudu to delat")
                 self.image[frontier[1],frontier[0]] = 25
                 #self.image[(frontier[1])*wi + frontier[0]] =25
                 plt.imshow(self.image)
@@ -208,7 +208,7 @@ class FrontierExplorer():
             print("making image")
             wi=self.gridInfo.width
             if True: #not (((frontier[1])*wi + frontier[0])>= len(self.image)):
-                print("nebudu to delat")
+                #print("nebudu to delat")
                 self.image[frontier[1],frontier[0]] = 25
                 #self.image[(frontier[1])*wi + frontier[0]] =25
                 plt.imshow(self.image)

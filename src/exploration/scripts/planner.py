@@ -143,14 +143,11 @@ class PathPlanner():
                 im2 = np.reshape(im2,(hi,wi))
                 im2[rob[1]][rob[0]]=90
                 print("kresli ceny")
-                for a in priceGrid:
-                    if ((a[1])*wi + a[0]) > len(im2):
-                        print("bullshit")
-                        continue
-                    if a==1:
-                        im2[(a[1])*wi + a[0]] = 10
-                    elif a==2:
-                        im2[(a[1])*wi + a[0]] = 20
+                for k in range(len(priceGrid)):
+                    if priceGrid[k]==1:
+                        im2[k]=10
+                    elif priceGrid[k]==2:
+                        im2[k]=20
             except:
                 print("obrazek v pici")
             self.image = im2
