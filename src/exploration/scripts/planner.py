@@ -9,6 +9,7 @@ from geometry_msgs.msg import Pose2D
 from exploration.srv import PlanPath, PlanPathRequest, PlanPathResponse
 import tf2_ros
 import geometry_msgs.msg
+from geometry_msgs.msg import Point
 """
 Here are imports that you are most likely will need. However, you may wish to remove or add your own import.
 """
@@ -35,6 +36,14 @@ class PathPlanner():
 
         # Subscribe to grid
         self.gridSubscriber = rospy.Subscriber('occupancy', OccupancyGrid, self.grid_cb)
+        self.barbieSubscriber = rospy.Subscriber('barbie_position_final', Point, barbie_cb)
+
+    def barbie_cb(msg):
+        self.barbiex = msg.x
+        self.barbiey = msg.y
+        #global barbieDetected
+        #barbieDetected = True
+        print("barbie at "+str(self.barbiex)+","+str(self.barbiey))
 
     def planPath(self, request):
         """ Plan and return path from the robot position to the requested goal """
@@ -68,6 +77,7 @@ class PathPlanner():
                     continue
                 tmpGrid[rob[1]+i][rob[0]+j]=0
 
+
         inflated_grid = morphology.grey_dilation(tmpGrid,size=(9,9))
 
         print("inflating 3 grids")
@@ -76,6 +86,18 @@ class PathPlanner():
         print("counting prices")
         priceGrid=utils.driveabilityGrid(inflated_grid,grid2,grid3)
         priceGrid = utils.penalizeUnknown(priceGrid)
+
+        ####### filtrace okolo barbie ######
+        barbiePos = np.array([self.barbiex,self.barbiey], dtype=np.float)
+        barbieGridPos=utils.getGridPosition(barbiePos, self.gridInfo)
+        barbieGridPos=np.array([int(barbieGridPos[0]),int(barbieGridPos[1])])
+        indexes = range(-4,5) # od -3 po 3
+        for i in indexes:
+            for j in indexes:
+                if ((barbieGridPos[1]+i)>self.gridInfo.height) or ((barbieGridPos[0]+j)>self.gridInfo.width):
+                    print("mazu mimo pole")
+                    continue
+                tmpGrid[barbieGridPos[1]+i][barbieGridPos[0]+j]=0
 
 
         #print("INFLATED")
