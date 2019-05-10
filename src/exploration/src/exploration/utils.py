@@ -236,7 +236,22 @@ def addNode(nodeInd,grid,ret,threshold):
 
     return ret
 
-def AstarSearch(start, goal, grid, rows, cols):
+def driveabilityGrid(grid1,grid2,grid3):
+    diff21 = grid2-grid1 # returns 1 next to obstacles
+    diff31 = grid3-grid1 # resturns 1 nexto to obsacles and 1 next to the previous (i.e. 2)
+    priceGrid = diff21+diff31 # sum it to make it 2 next to obstacles and 1 nexto to it
+    priceGrid = priceGrid+1 # make it coefs (i.e. multiple by 1 is neutral)
+    return priceGrid
+
+def penalizeUnknown(grid):
+    indexes = grid == -1
+    grid[indexes] = 99
+    return grid
+
+def AstarSearch(start, goal, grids, rows, cols):
+    grid = grids[0]
+    prices = grids[1]
+
     #open = np.array(dtype=dtype)
     open = []
     closed = []
@@ -252,7 +267,7 @@ def AstarSearch(start, goal, grid, rows, cols):
     startNode = Node()
     startNode.gridIndex = startInd
     startNode.g = 0
-    startNode.h = euclidianDistance(startInd,goalInd,cols)
+    startNode.h = prices[startInd]*euclidianDistance(startInd,goalInd,cols)
     startNode.f = startNode.h
     startNode.parent = None
     #print("startNOde="+str(startNode))
@@ -311,7 +326,7 @@ def AstarSearch(start, goal, grid, rows, cols):
                 return getPath(goal,cols)
 
             succ.g=q.g + euclidianDistance(q.gridIndex,succ.gridIndex,cols)
-            succ.h=euclidianDistance(succ.gridIndex,goalInd,cols)
+            succ.h=prices[q.gridIndex]*euclidianDistance(succ.gridIndex,goalInd,cols)
             succ.f = succ.g + succ.h
 
             isOpened = any(x.gridIndex == succ.gridIndex for x in open)

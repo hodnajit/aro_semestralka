@@ -70,7 +70,15 @@ class PathPlanner():
 
         inflated_grid = morphology.grey_dilation(tmpGrid,size=(9,9))
 
-        print("INFLATED")
+        print("inflating 3 grids")
+        grid2 = morphology.grey_dilation(inflated_grid,size=(9,9))
+        grid3 = morphology.grey_dilation(grid2,size=(9,9))
+        print("counting prices")
+        priceGrid=utils.driveabilityGrid(inflated_grid,grid2,grid3)
+        priceGrid = utils.penalizeUnknown(priceGrid)
+
+
+        #print("INFLATED")
         #print(inflated_grid)
         #print("tmpGrid="+str(tmpGrid.shape))
         #tmpGrid = tmpGrid <= threshold
@@ -111,7 +119,11 @@ class PathPlanner():
         print("planning")
         hi = self.gridInfo.height
         wi = self.gridInfo.width
-        path = utils.AstarSearch(self.robotPosition,goalPositionGrid, tmpGrid, rows, cols)
+        gridGroup = []
+        gridGroup.append(tmpGrid)
+        priceGrid = np.reshape(priceGrid,self.gridInfo.height*self.gridInfo.width)
+        gridGroup.append(priceGrid)
+        path = utils.AstarSearch(self.robotPosition,goalPositionGrid, gridGroup, rows, cols)
         ##print(path)
 
 
@@ -122,14 +134,23 @@ class PathPlanner():
                     if ((a[1])*wi + a[0]) > len(im2):
                         print("bullshit")
                         continue
-                    im2[(a[1])*wi + a[0]] = 75
+                    im2[(a[1])*wi + a[0]] = 60
 
-                im2[(a[1])*wi + a[0]] = 25
+                im2[(a[1])*wi + a[0]] = 65
                 if (hi*wi) > len(im2):
                     print("ani hovno")
                     return frontiers
                 im2 = np.reshape(im2,(hi,wi))
                 im2[rob[1]][rob[0]]=90
+                print("kresli ceny")
+                for a in priceGrid:
+                    if ((a[1])*wi + a[0]) > len(im2):
+                        print("bullshit")
+                        continue
+                    if a==1:
+                        im2[(a[1])*wi + a[0]] = 10
+                    elif a==2:
+                        im2[(a[1])*wi + a[0]] = 20
             except:
                 print("obrazek v pici")
             self.image = im2
