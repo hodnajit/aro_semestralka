@@ -161,7 +161,7 @@ if __name__ == "__main__":
         sentPath = len(response.path)
         global rcvPath
         rcvPath = sentPath
-        rotate360()
+
 
         msg = MarkerArray([Marker(header=header, pose=Pose(position=Point(p.x, p.y, 0)), id=np.random.randint(0, 1000), type=1, scale=Vector3(0.05, 0.05, 0.05), color=ColorRGBA(0.5, 0.5, 1, 0.8)) for p in response.path])
         pathMarkers.publish(msg)
@@ -187,5 +187,5 @@ if __name__ == "__main__":
             rospy.sleep(0.1)
 
 
-
+        rotate360()
         print("pracuju")
