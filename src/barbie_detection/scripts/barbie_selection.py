@@ -10,7 +10,7 @@ import tf2_ros
 import math 
 import tf2_geometry_msgs
 
-tresh = 0.2
+tresh = 0.1
 detections = []
 minimum = 3
 def getDist(pose1,pose2):
@@ -39,24 +39,27 @@ def barbie_cb(msg):
     counter = []
     counter= [0] * len(detections)
 
-    header = Header(stamp=rospy.Time.now(), frame_id="map")
-    msg = Marker(header=header, pose=Pose(position=pose_transformed.point), id=np.random.randint(0, 1e9), type=Marker.SPHERE, scale=Vector3(0.04, 0.04, 0.04), color=ColorRGBA(1, 1, 1, 1), lifetime=rospy.Duration(0))
-    markerAllPublisher.publish(msg)
-
+    if pose_transformed.point.z > 0.3:
+        detections.remove(pose_transformed)
+        print("Jsme vysoko")
+        return 
 
     for index,det in enumerate(detections):
         for nn in detections:
             if getDist(det.point,nn.point) < tresh :
                 counter[index] +=1
-
     if (max(counter) < minimum):
         print("No clusters yet")
         return
 
-    if pose_transformed.point.z > 0.3:
-        detections.remove(msg)
-        print("Jsme vysoko")
-        return 
+
+
+
+    header = Header(stamp=rospy.Time.now(), frame_id="map")
+    msg = Marker(header=header, pose=Pose(position=pose_transformed.point), id=np.random.randint(0, 1e9), type=Marker.SPHERE, scale=Vector3(0.04, 0.04, 0.04), color=ColorRGBA(1, 1, 1, 1), lifetime=rospy.Duration(0))
+    markerAllPublisher.publish(msg)
+
+
 
    
     best = detections[counter.index(max(counter))]#find index of largest

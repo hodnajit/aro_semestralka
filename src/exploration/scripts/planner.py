@@ -36,9 +36,11 @@ class PathPlanner():
 
         # Subscribe to grid
         self.gridSubscriber = rospy.Subscriber('occupancy', OccupancyGrid, self.grid_cb)
-        self.barbieSubscriber = rospy.Subscriber('barbie_position_final', Point, barbie_cb)
+        self.barbieSubscriber = rospy.Subscriber('barbie_position_final', Point, self.barbie_cb)
+        self.barbiex = 0
+        self.barbiey = 0
 
-    def barbie_cb(msg):
+    def barbie_cb(self, msg):
         self.barbiex = msg.x
         self.barbiey = msg.y
         #global barbieDetected
@@ -91,7 +93,7 @@ class PathPlanner():
         barbiePos = np.array([self.barbiex,self.barbiey], dtype=np.float)
         barbieGridPos=utils.getGridPosition(barbiePos, self.gridInfo)
         barbieGridPos=np.array([int(barbieGridPos[0]),int(barbieGridPos[1])])
-        indexes = range(-4,5) # od -3 po 3
+        indexes = range(-7,8) # od -3 po 3
         for i in indexes:
             for j in indexes:
                 if ((barbieGridPos[1]+i)>self.gridInfo.height) or ((barbieGridPos[0]+j)>self.gridInfo.width):
