@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
 import rospy
-from geometry_msgs.msg import Pose2D, Pose, Point, Vector3, PoseStamped
+from geometry_msgs.msg import Pose2D, Pose, Point, Vector3, PoseStamped, Twist
 from nav_msgs.msg import Path
 from std_msgs.msg import Header, ColorRGBA, Int32
 from visualization_msgs.msg import Marker, MarkerArray
 from exploration.srv import AnyFrontiersLeft, AnyFrontiersLeftRequest, AnyFrontiersLeftResponse, GenerateFrontier, GenerateFrontierResponse
 from exploration.srv import PlanPath,  PlanPathRequest, PlanPathResponse
 import numpy as np
+import math
+import time
+
+from robot_coordination.srv import StopMovement, StartMovement
 
 sentPath = 0
 newPath = False
@@ -21,9 +25,13 @@ def path_cb(msg):
     rcvPath = msg.data # pocet kolik waypoints zbyva do konce
     traveledPath = sentPath - rcvPath
     change = sentPath/2
+    #print("sentPath recieve path " )
+    #print(sentPath)
+    #print(rcvPath)
     if traveledPath > change:
         newPath = True
         #print("Preplanovavam "+str(traveledPath)+">"+str(change))
+
 
 def barbie_cb(msg):
     global barbiex
@@ -33,6 +41,60 @@ def barbie_cb(msg):
     global barbieDetected
     barbieDetected = True
     print("barbie at "+str(barbiex)+","+str(barbiey))
+def wait_for_service( srv_name):
+    """Wait for a service called srv_name."""
+    while not rospy.is_shutdown():
+        try:
+            rospy.wait_for_service(srv_name, 1)
+            return True
+        except rospy.ROSException:
+            rospy.logwarn('Could not connect to service {}, trying again'.format(srv_name))
+        except (rospy.ROSInterruptException, KeyboardInterrupt):
+            return False
+def start_movement( backwards=False):
+    """Start the robot motion by calling the service 'start_movement'"""
+    srv_name = '/start_movement'
+    if not wait_for_service(srv_name):
+        return False
+    try:
+        start_movement_srv = rospy.ServiceProxy(srv_name, StartMovement)
+        reply = start_movement_srv(backwards)
+        return reply.ack
+    except rospy.ServiceException as e:
+        rospy.logerr('Service call failed: {}'.format(e))
+        waypoints_ahead_updated = False
+    return False
+
+def stop_movement():
+    """Stop the robot motion by calling the service 'stop_movement'"""
+    srv_name = '/stop_movement'
+    if not wait_for_service(srv_name):
+        return False
+    try:
+        stop_movement_srv = rospy.ServiceProxy(srv_name, StopMovement)
+        reply = stop_movement_srv()
+        return reply.ack
+    except rospy.ServiceException as e:
+        rospy.logerr('Service call failed: {}'.format(e))
+    return False
+
+def rotate360():
+    print("tocime")
+    stop_movement()
+    vel_msg = Twist()
+    speed = 4
+    vel_msg.linear.y = 0
+    vel_msg.linear.z = 0
+    vel_msg.angular.x = 0
+    vel_msg.angular.y = 0
+    vel_msg.angular.z = 1.5
+    for x in xrange(1,10):
+        cmdPub.publish(vel_msg)
+        time.sleep(1.5)
+    vel_msg.angular.z = 0
+    print("mocime")
+    cmdPub.publish(vel_msg)
+    start_movement()
 
 
 if __name__ == "__main__":
@@ -41,7 +103,8 @@ if __name__ == "__main__":
 
     pathSubscriber = rospy.Subscriber('waypoints_ahead', Int32, path_cb)
     barbieSubscriber = rospy.Subscriber('barbie_position_final', Point, barbie_cb)
-
+    cmdPub = rospy.Publisher('/cmd_vel_mux/safety_controller',Twist, queue_size=10)
+        
     cmd = rospy.get_param("~cmd", "random")
     frontierMarker = rospy.Publisher("frontier", Marker, queue_size=10)
     pathMarkers = rospy.Publisher("path", MarkerArray, queue_size=10)
@@ -91,8 +154,8 @@ if __name__ == "__main__":
 
         global sentPath
         sentPath = len(response.path)
-
-        rospy.sleep(0.5)
+        rotate360()
+        
         msg = MarkerArray([Marker(header=header, pose=Pose(position=Point(p.x, p.y, 0)), id=np.random.randint(0, 1000), type=1, scale=Vector3(0.05, 0.05, 0.05), color=ColorRGBA(0.5, 0.5, 1, 0.8)) for p in response.path])
         pathMarkers.publish(msg)
 
@@ -109,10 +172,13 @@ if __name__ == "__main__":
             poses.append(poseStamped)
 
         path_points.poses = poses
+        
         path_pub.publish(path_points)
         print("cekam az dojede pohyb")
         #rospy.sleep(3)
         while not newPath and not rospy.is_shutdown():
-            pass
+            rospy.sleep(0.1)
+        
+        
 
         print("pracuju")
