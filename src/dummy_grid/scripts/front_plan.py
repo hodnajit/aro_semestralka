@@ -87,10 +87,10 @@ def rotate360():
     vel_msg.linear.z = 0
     vel_msg.angular.x = 0
     vel_msg.angular.y = 0
-    vel_msg.angular.z = 1.6
+    vel_msg.angular.z = 1.5
     for x in xrange(1,10):
         cmdPub.publish(vel_msg)
-        time.sleep(1)
+        time.sleep(1.5)
     vel_msg.angular.z = 0
     print("mocime")
     cmdPub.publish(vel_msg)

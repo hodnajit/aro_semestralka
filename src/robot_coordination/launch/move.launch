@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="robot_coordination" type="robot_node" name="robot_node" />
+    <node name="path_following_simple.py" pkg="robot_coordination" type="path_following_simple.py" />
+</launch>

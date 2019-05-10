@@ -22,51 +22,49 @@ def getDist(pose1,pose2):
 
 def barbie_cb(msg):
 
-    detections.append(msg)
+    transforming = True
+    try:
+        trans = tfBuffer.lookup_transform("map", "camera_rgb_optical_frame", msg.header.stamp, rospy.Duration(0.1))
+    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        rospy.logwarn("Cannot get the odom position!")
+        transforming = False
+
+
+    if transforming:
+        pose_transformed = tf2_geometry_msgs.do_transform_point(msg, trans)
+    else:
+        pose_transformed = msg
+
+    detections.append(pose_transformed)
     counter = []
     counter= [0] * len(detections)
-    pnt = msg.point    
+
+    header = Header(stamp=rospy.Time.now(), frame_id="map")
+    msg = Marker(header=header, pose=Pose(position=pose_transformed.point), id=np.random.randint(0, 1e9), type=Marker.SPHERE, scale=Vector3(0.04, 0.04, 0.04), color=ColorRGBA(1, 1, 1, 1), lifetime=rospy.Duration(0))
+    markerAllPublisher.publish(msg)
+
 
     for index,det in enumerate(detections):
         for nn in detections:
             if getDist(det.point,nn.point) < tresh :
                 counter[index] +=1
 
-    transforming = True
     if (max(counter) < minimum):
+        print("No clusters yet")
         return
-    try:
-        trans = tfBuffer.lookup_transform("map", "camera_rgb_optical_frame", msg.header.stamp, rospy.Duration(0.5))
-    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-        rospy.logwarn("Cannot get the odom position!")
-        transforming = False
 
-    if transforming:
-        pose_transformed = tf2_geometry_msgs.do_transform_point(msg, trans)
-    else:
-        pose_transformed = msg
     if pose_transformed.point.z > 0.3:
         detections.remove(msg)
         print("Jsme vysoko")
         return 
 
-    header = Header(stamp=rospy.Time.now(), frame_id="map")
-    msg = Marker(header=header, pose=Pose(position=pose_transformed.point), id=np.random.randint(0, 1e9), type=Marker.SPHERE, scale=Vector3(0.04, 0.04, 0.04), color=ColorRGBA(1, 1, 1, 1), lifetime=rospy.Duration(0))
-    markerAllPublisher.publish(msg)
+   
     best = detections[counter.index(max(counter))]#find index of largest
 
-    if transforming:
-        pose_transformed = tf2_geometry_msgs.do_transform_point(best, trans)
-    else:
-        pose_transformed =best
-
-
-    msg = Marker(header=header, pose=Pose(position=pose_transformed.point), id=1, type=Marker.SPHERE, scale=Vector3(0.1, 0.1, 0.1), color=ColorRGBA(1, 0, 0, 1), lifetime=rospy.Duration(0))
+    msg = Marker(header=header, pose=Pose(position=best.point), id=1, type=Marker.SPHERE, scale=Vector3(0.1, 0.1, 0.1), color=ColorRGBA(1, 0, 0, 1), lifetime=rospy.Duration(0))
     markerPublisher.publish(msg)
 
-
-
-    barbPublisher.publish(pose_transformed.point)
+    barbPublisher.publish(best.point)
 
 
 if __name__ == "__main__":
