@@ -93,13 +93,14 @@ class PathPlanner():
         barbiePos = np.array([self.barbiex,self.barbiey], dtype=np.float)
         barbieGridPos=utils.getGridPosition(barbiePos, self.gridInfo)
         barbieGridPos=np.array([int(barbieGridPos[0]),int(barbieGridPos[1])])
-        indexes = range(-7,8) # od -3 po 3
+        indexes = range(-9,10) # od -3 po 3
         for i in indexes:
             for j in indexes:
                 if ((barbieGridPos[1]+i)>self.gridInfo.height) or ((barbieGridPos[0]+j)>self.gridInfo.width):
                     print("mazu mimo pole")
                     continue
                 tmpGrid[barbieGridPos[1]+i][barbieGridPos[0]+j]=0
+                print(barbieGridPos)
 
 
         #print("INFLATED")
@@ -151,7 +152,7 @@ class PathPlanner():
         ##print(path)
 
 
-        if True:
+        if False:
             try:
                 print("kresli path")
                 for a in path:

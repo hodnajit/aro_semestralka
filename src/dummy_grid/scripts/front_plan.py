@@ -41,6 +41,7 @@ def barbie_cb(msg):
     global barbieDetected
     barbieDetected = True
     print("barbie at "+str(barbiex)+","+str(barbiey))
+    global newPath
     newPath = True
 
 def wait_for_service( srv_name):
@@ -97,7 +98,7 @@ def rotate360():
     vel_msg.angular.z = 0
     print("mocime")
     cmdPub.publish(vel_msg)
-    start_movement()
+
 
 
 if __name__ == "__main__":
