@@ -82,13 +82,6 @@ class PathPlanner():
 
         inflated_grid = morphology.grey_dilation(tmpGrid,size=(9,9))
 
-        print("inflating 3 grids")
-        grid2 = morphology.grey_dilation(inflated_grid,size=(9,9))
-        grid3 = morphology.grey_dilation(grid2,size=(9,9))
-        print("counting prices")
-        priceGrid=utils.driveabilityGrid(inflated_grid,grid2,grid3)
-        priceGrid = utils.penalizeUnknown(priceGrid)
-
         ####### filtrace okolo barbie ######
         barbiePos = np.array([self.barbiex,self.barbiey], dtype=np.float)
         barbieGridPos=utils.getGridPosition(barbiePos, self.gridInfo)
@@ -99,8 +92,19 @@ class PathPlanner():
                 if ((barbieGridPos[1]+i)>self.gridInfo.height) or ((barbieGridPos[0]+j)>self.gridInfo.width):
                     print("mazu mimo pole")
                     continue
-                tmpGrid[barbieGridPos[1]+i][barbieGridPos[0]+j]=0
-                print(barbieGridPos)
+                if tmpGrid[barbieGridPos[1]+i][barbieGridPos[0]+j] <= threshold:
+                    barbieGridPos[1]=barbieGridPos[1]+i
+                    barbieGridPos[0]=barbieGridPos[0]+j
+                    print("menim si pozici barbie na prujezdno")
+                #tmpGrid[barbieGridPos[1]+i][barbieGridPos[0]+j]=0
+        print("barbie in grid="+str(barbieGridPos))
+
+        print("inflating 3 grids")
+        grid2 = morphology.grey_dilation(inflated_grid,size=(9,9))
+        grid3 = morphology.grey_dilation(grid2,size=(9,9))
+        print("counting prices")
+        priceGrid=utils.driveabilityGrid(inflated_grid,grid2,grid3)
+        priceGrid = utils.penalizeUnknown(priceGrid)
 
 
         #print("INFLATED")
