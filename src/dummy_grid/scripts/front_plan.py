@@ -120,7 +120,7 @@ if __name__ == "__main__":
     any = True
     while any and not rospy.is_shutdown():
 
-        
+
         #rospy.wait_for_service("any_frontiers_left")
         #caller = rospy.ServiceProxy("any_frontiers_left", AnyFrontiersLeft)
         #rospy.loginfo(caller.call())
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         #any = response.any_frontiers_left
         #print(any)
         if not barbieDetected:
-            rotate360()
+            #rotate360()
             print("searching frontiers")
             if cmd.lower() == "random":
                 rospy.wait_for_service("get_random_frontier")
@@ -140,13 +140,19 @@ if __name__ == "__main__":
                 caller = rospy.ServiceProxy("get_closest_frontier", GenerateFrontier)
 
             response = caller.call()
-            print("TADYYYYYYYYYYY vypisu path")
+            #print("TADYYYYYYYYYYY vypisu path")
             rospy.loginfo(response)
-            print("DOPSAAAAAAAAAAL path")
+            #print("DOPSAAAAAAAAAAL path")
             rospy.sleep(0.5)
             header = Header(stamp=rospy.Time.now(), frame_id="map")
             msg = Marker(header=header, pose=Pose(position=Point(response.goal_pose.x, response.goal_pose.y, 0)), id=np.random.randint(0, 1e9), type=Marker.CUBE, scale=Vector3(0.1, 0.1, 0.1), color=ColorRGBA(0.5, 1, 0, 1), lifetime=rospy.Duration(0))
             frontierMarker.publish(msg)
+            print("RESPONSE"+str(response.goal_pose))
+            if response.goal_pose is None:
+                print("nenasel frontiera, toci se")
+                rotate360()
+                print("neplanuju nikam, hledam znova")
+                continue
 
 
             posx = response.goal_pose.x
@@ -188,8 +194,8 @@ if __name__ == "__main__":
         path_pub.publish(path_points)
         print("cekam az dojede pohyb")
         #rospy.sleep(3)
-        while not newPath and not rospy.is_shutdown():
-            rospy.sleep(0.1)
+        #while not newPath and not rospy.is_shutdown():
+            #rospy.sleep(0.1)
 
 
 

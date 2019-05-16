@@ -278,6 +278,13 @@ def AstarSearch(start, goal, grids, rows, cols):
     if startInd==goalInd:
         return getPath(startNode,cols)
 
+    if goalInd >= len(grid):
+        print("asi ti nic nenaplanuju, cil je mimo mapu")
+        return []
+    if grid[goalInd]==False:
+        print("CANNOT PLAN TO OBSTACLE!")
+        return []
+
     #open=startNode
     open.append(startNode)
     closed.append(startNode)
