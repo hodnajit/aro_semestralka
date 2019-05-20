@@ -3,9 +3,9 @@
 % E-mail:  jan.zabojnik@fel.cvut.cz
 % Date:    03.02.2014 14:57
 %
-\documentclass[twoside]{article}
+\documentclass[twocolumn]{journal}
 \usepackage[a4paper]{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=-0.5cm,bmargin=1cm,lmargin=1cm,rmargin=1cm}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -13,7 +13,7 @@
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc} %cp1250
-\usepackage[czech]{babel}	
+\usepackage[czech]{babel}   
 
 % odkazy
 \usepackage{url}
@@ -29,23 +29,6 @@
 \usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
 \definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
 \definecolor{mylilas}{RGB}{170,55,241}
-
-\lstset{language=Matlab,%
-    %basicstyle=\color{red},
-    breaklines=true,%
-    morekeywords={matlab2tikz},
-    keywordstyle=\color{blue},%
-    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
-    identifierstyle=\color{black},%
-    stringstyle=\color{mylilas},
-    commentstyle=\color{mygreen},%
-    showstringspaces=false,%without this there will be a symbol in the places where there is a space
-    numbers=left,%
-    numberstyle={\tiny \color{black}},% size of the numbers
-    numbersep=9pt, % this defines how far the numbers are from the text
-    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
-    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
-}
 
 %zarovnani rovnic
 \usepackage{amssymb}
@@ -63,7 +46,7 @@
 
 % vnořené popisky obrázků
 \usepackage{subcaption}
-
+\pagenumbering{gobble}
 % automatická konverze EPS 
 \usepackage{graphicx} 
 \usepackage{epstopdf}
@@ -74,7 +57,7 @@ bookmarksopen=false, breaklinks=false,pdfborder={0 0 0},
 pdfpagemode=UseNone,backref=false,colorlinks=true] {hyperref}
 
 % Poznámky při překladu
-\usepackage{xkeyval}	% Inline todonotes
+\usepackage{xkeyval}    % Inline todonotes
 \usepackage[textsize = footnotesize]{todonotes}
 \presetkeys{todonotes}{inline}{}
 
@@ -93,40 +76,66 @@ pdfpagemode=UseNone,backref=false,colorlinks=true] {hyperref}
 % ---------------------------------
 % ---------------------------------
 % název sekce je generován automaticky jako: Úkol X
-\section{Zadání}
-Cílem semestrální práce je lokalizace panenky Barbie v neznámém prostředí s využitím robotu TurtleBot s RPLidarem a kamerou.
 \section{Řešení}
-	Robot využívá několik balíčků
-	\begin{itemize}
-		\item SLAM (s využitím gridu, voxel map, transforms3d) s ICP s odometrií,
-		\item Robot coordination - pohyb robota a sledování naplánované cesty pomocí Carrot,
-		\item exploration - hledání frontiers a naplánování cesty k nim,
-		\item a barbie detection - naučená neronová síť na detekci panenky Barbie.
-	\end{itemize}
-\section{Originální nápady, které vylepší chování robota}
+    Robot se lokalizuje pomocí lidaru v mapě, přičemž se při jízdě počítá ICP, které zarovnává data z lidaru se vstupními daty z odometrie. Robot v každém časovém intervalu přepočítává možné neprozkoumané oblasti (frontiery) a vždy k jednomu náhodnému naviguje pomocí follow the carrot kontroler.  Detekce barbie jsou nejprve filtrovány a následně umístěny do mapy.
+\section{Originální nápady, které poskytují výhodu oproti ostatním týmům}
 \subsection{Výběr vhodné cesty a jízda}
-	% jak vybíráme cíl cesty a jak jedeme (průběžné vybírání cílů, hledání nových frontiers..., otáčení pokud nemáme frontiera)
-\subsection{Filtr naplánované cesty}
-	% Vybíráme 4. od začátku a nedojíždíme až na konec (-3)
-\subsection{Výběr vhodných parametrů pro front-plan}
-	Selekce vhodných parametrů pro nafukování detekovaných překážek v mapě...\\
-	Jak můžete vidět v obrázku \ref{fig:front_plan}.
-	\begin{figure}[!h]
+    % jak vybíráme cíl cesty a jak jedeme (průběžné vybírání cílů, hledání nových frontiers..., otáčení pokud nemáme frontiera)
+    Plánování je zajištěno pomocí algoritmu A*. V defaultním nastavení robot hledá nejkratší cestu, která je téměř vždy naplánována těsně okolo překážek. Tato situace je řešena pomocí heuristiky, přičemž prostoru okolo překážek je přiřazena větší cena než prostoru bez překážek. Prostor okolo překážek je tvořen pomocí nafukování nejdříve o jednu úroveň a poté o druhou úroveň. Rozdíl těchto úrovní poté váhuje průjezdný prostor. 
+    
+    Pro hledání nejlepšího frontieru se osvědčila metoda random, při které se neplánuje na nejbližší bod vzdálený od robota, a tedy robot může jezdit delší trasou a navíc je zde menší šance, že robot objeví překážku v místě, kam si naplánoval cestu. 
+    
+    K přeplánování dochází v co nejkratší časový interval tak, aby byl robot schopen včas zaznamenat novou překážku v mapě a naplánovat novou cestu okolo ní. 
+    
+    Robot nenásleduje naplánovanou cestu až přímo do cílového bodu, ale zastaví se několik bodů před cílem tak, aby v případě problémů nedocházelo ke kolizi. 
+    
+    Pokud robot nenalezne další frontiery, začne se točit na aktuální pozici, aby zaznamenal co největší plochu kamerou a maximalizoval tak možnost detekce barbie. 
+    
+    Pro zrychlení robota po zapnutí programu je odebráno pár prvních bodů tak, aby robot mířil rovnou na další bod. 
+    
+    % Vybíráme 4. od začátku a nedojíždíme až na konec (-3)
+\subsection{Debuggování plánování a prozkoumávání prostoru}
+Pro debuggování kódu bylo využito obrázků mapy, ve které byly zakresleny žlutou barvou nafouknuté překážky, fialovou barvou je označen průjezdný prostor, tmavě zelený prostor je neprozkoumaný prostor a světle zelené body označují nalezené frontiery. V pozdějí verzi jsou i vizualizované naplánované cesty včetně pozice robota. 
+\begin{figure}[!h]
      \centering
-     \begin{subfigure}[b]{0.45\textwidth}
+     \begin{subfigure}[b]{0.24\textwidth}
          \centering
-         \includegraphics[width=\textwidth]{img/test.png}
-         \caption{Test pic}
+         \includegraphics[width=\textwidth]{one.png}
+         \caption{Prozkoumávání mapy}
      \end{subfigure}
-     \begin{subfigure}[b]{0.45\textwidth}
+     \begin{subfigure}[b]{0.24\textwidth}
          \centering
-         \includegraphics[width=\textwidth]{img/test.png}
-         \caption{Test pic)}
-         
+         \includegraphics[width=\textwidth]{xend.png}
+         \caption{Prozkoumaná celá mapa}
      \end{subfigure}
-        \caption{Test caption}
+        \caption{Obrázky použité pro debuggování kódu}
         \label{fig:front_plan}
-	\end{figure}
+    \end{figure}
+    
+\subsection{Clustering a filtrace barbie}
+    Při deketeci barbie je její pozice tranformována do rámu mapy, ve kterém jsou odfiltrovány všechny hodnoty, které se nachází výše než 30 cm (výška bludiště). Následně pro vytvoření clusteru jsou nutné 3 detekce s maximální vzdáleností 15 cm od sebe. Z pozic všech detekcí v clusteru se na závěr dělá median.  
+
+\subsection{Filtrace sama sebe}
+    Z detekcí lidaru a z occupation grid filtrujeme všechny body, které obsahují pozici robota. Tyto body jsou označeny jako průjezdné. To je podstatné zejména pro roboty, kteří mají aktualizovaný firmware a vidí svoje tyčky.
+
+\section{Originální nápady, které jsme nestihli nebo jen z části implementovali}
+    \subsection{Virtualní bumper}
+        Detekce vzdálenosti robota od dané stěny by byly rozpočítány na několik úhlů (dopředu, dozadu, vlevo, vpravo) a následně by robot měl zakázáno jet, pokud by v daném směru, kam chce jet, detekoval překážku. Tato metoda by eliminovala nutnost přepočítávání frontierů maximální možnou rychlostí.
+    \subsection{Explorace kamerou}
+        Metoda zahrnuje tvoření separátní occupancy grid, která se označuje za prozkoumanou pouze v místech, které robot kamerou již viděl (kužel před robotem do určité vzdálenosti) a následně by se počítali frontieři na této ocuupancy grid.
+
+\section{Co bychom vylepšili do budoucna}
+    \begin{itemize}
+        \item Baterie robotů vydrží při běžící neuronové síti na NUC cca hodinu. Zároveň robot se nestíhá nabíjet, takže vybitý robot zapojený do záuvky s běžící neuronkou se i sám dokáže vypnout.
+        \item Online updatovatelný seznam, co na kterém robotu nefunguje (například, že někteří nemají lidar nebo že někteří mají problém se sítí atd.)
+        \item Nějaké opatření, aby lidé nemohli vytvořit workspace v home robota. 
+        \item Druhé i když miniaturní bludiště (klidně $2\times 2$ m s kostkou uprostřed) v druhé místnosti pro možnost testování.
+        \item Víc barbie (nebo čehokoli, co bude nutno detekovat, asi dvě by i stačily)
+        \item Více informací o bonusové úloze (nebo alespoň napsat, kde je magnet).
+        \item Lepší indikátor baterie na robotech (velké číslo na display/topic).
+        
+    \end{itemize}
+    
 
 
 
